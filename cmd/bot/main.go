@@ -16,10 +16,9 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
-	"github.com/ernado/lupanarbot/internal/minust"
-
 	entdb "github.com/ernado/lupanarbot/internal/db"
 	"github.com/ernado/lupanarbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/minust"
 )
 
 type Application struct {
@@ -116,6 +115,16 @@ func (a *Application) onChannelParticipant(ctx context.Context, e tg.Entities, u
 	return nil
 }
 
+func extractUserID(e tg.Entities, m *tg.Message) (int64, bool) {
+	if peerUser, ok := m.FromID.(*tg.PeerUser); ok {
+		return peerUser.UserID, true
+	}
+	if peerUser, ok := m.PeerID.(*tg.PeerUser); ok {
+		return peerUser.UserID, true
+	}
+	return 0, false
+}
+
 func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMessage) error {
 	ctx, span := a.trace.Start(ctx, "OnNewMessage")
 	defer span.End()
@@ -128,14 +137,14 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 		reply  = sender.Reply(e, u)
 		lg     = zctx.From(ctx).With(zap.Int("msg.id", m.ID))
 	)
-	peerUser, ok := m.FromID.(*tg.PeerUser)
+	userID, ok := extractUserID(e, m)
 	if !ok {
 		if _, err := reply.Text(ctx, "Invalid"); err != nil {
 			return err
 		}
 		return nil
 	}
-	user := e.Users[peerUser.UserID]
+	user := e.Users[userID]
 	if user == nil {
 		return nil
 	}
