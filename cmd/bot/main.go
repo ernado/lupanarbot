@@ -6,7 +6,6 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/ernado/lupanarbot/internal/minust"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
 	"github.com/go-faster/sdk/zctx"
@@ -16,6 +15,8 @@ import (
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
+
+	"github.com/ernado/lupanarbot/internal/minust"
 
 	entdb "github.com/ernado/lupanarbot/internal/db"
 	"github.com/ernado/lupanarbot/internal/ent"
