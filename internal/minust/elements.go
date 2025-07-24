@@ -2,7 +2,9 @@ package minust
 
 import (
 	"bytes"
+	"crypto/rand"
 	_ "embed"
+	"encoding/binary"
 	"encoding/json"
 	"io"
 
@@ -18,6 +20,32 @@ type Element struct {
 var data []byte
 
 var Elements []Element
+
+func Random() Element {
+	if len(Elements) == 0 {
+		return Element{
+			ID:    228,
+			Title: "БД Не инициализирована",
+		}
+	}
+
+	// Use crypto/rand to generate random id.
+	totalElements := len(Elements)
+
+	// Generate random index using crypto/rand
+	randomBytes := make([]byte, 4)
+	_, err := rand.Read(randomBytes)
+	if err != nil {
+		// Fallback to first element if crypto/rand fails
+		return Elements[0]
+	}
+
+	// Convert bytes to uint32 and get index within bounds
+	randomUint32 := binary.BigEndian.Uint32(randomBytes)
+	randomIndex := int(randomUint32) % totalElements
+
+	return Elements[randomIndex]
+}
 
 func init() {
 	reader, err := gzip.NewReader(bytes.NewReader(data))
