@@ -56,9 +56,9 @@ spec:
               memory: 256M
           env:
             - name: GOMEMLIMIT
-              value: "2048MiB"
+              value: "256MiB"
             - name: GOMAXPROCS
-              value: "3"
+              value: "1"
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
             - name: OTEL_METRICS_EXPORTER
