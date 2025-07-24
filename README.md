@@ -1,4 +1,4 @@
-# cgbot
+# lupanarbot
 
 
 Bot for lupanar chats.
