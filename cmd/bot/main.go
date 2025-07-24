@@ -58,7 +58,7 @@ func (a *Application) Run(ctx context.Context) error {
 						Description: "Start bot",
 					},
 					{
-						Command:     "экстремизм",
+						Command:     "extremism",
 						Description: "Какой экстремизм ты сегодня",
 					},
 				},
@@ -150,7 +150,7 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 		if _, err := reply.Text(ctx, "Hello, "+user.FirstName+"!"); err != nil {
 			return errors.Wrap(err, "send message")
 		}
-	case "/экстремизм":
+	case "/extremism":
 		e := minust.Random()
 		text := fmt.Sprintf("%d. %s", e.ID, e.Title)
 		if _, err := reply.Text(ctx, text); err != nil {
