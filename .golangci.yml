@@ -113,7 +113,6 @@ formatters:
   settings:
     goimports:
       local-prefixes:
-        - github.com/cydev/cgbot
+        - github.com/ernado/lupanarbot
   exclusions:
     generated: strict
-

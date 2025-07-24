@@ -40,10 +40,9 @@ func Random() Element {
 		return Elements[0]
 	}
 
-	// Convert bytes to uint32 and get index within bounds
+	// Convert bytes to uint32 and get index within bounds.
 	randomUint32 := binary.BigEndian.Uint32(randomBytes)
-	// Use uint64 to avoid overflow on 32-bit systems
-	randomIndex := int(uint64(randomUint32) % uint64(totalElements))
+	randomIndex := int(randomUint32 % uint32(totalElements))
 
 	return Elements[randomIndex]
 }
