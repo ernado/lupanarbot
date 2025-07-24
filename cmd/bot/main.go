@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strconv"
 
+	"github.com/ernado/lupanarbot/internal/minust"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
 	"github.com/go-faster/sdk/zctx"
@@ -54,6 +56,10 @@ func (a *Application) Run(ctx context.Context) error {
 					{
 						Command:     "start",
 						Description: "Start bot",
+					},
+					{
+						Command:     "экстремизм",
+						Description: "Какой экстремизм ты сегодня",
 					},
 				},
 			}); err != nil {
@@ -142,6 +148,12 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 	switch m.Message {
 	case "/start":
 		if _, err := reply.Text(ctx, "Hello, "+user.FirstName+"!"); err != nil {
+			return errors.Wrap(err, "send message")
+		}
+	case "/экстремизм":
+		e := minust.Random()
+		text := fmt.Sprintf("%d. %s", e.ID, e.Title)
+		if _, err := reply.Text(ctx, text); err != nil {
 			return errors.Wrap(err, "send message")
 		}
 	}
