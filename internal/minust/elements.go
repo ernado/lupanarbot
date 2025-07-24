@@ -69,5 +69,4 @@ func init() {
 	if err := json.Unmarshal(unzippedData, &Elements); err != nil {
 		panic("failed to unmarshal elements data: " + err.Error())
 	}
-
 }
