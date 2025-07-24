@@ -128,7 +128,7 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 		reply  = sender.Reply(e, u)
 		lg     = zctx.From(ctx).With(zap.Int("msg.id", m.ID))
 	)
-	peerUser, ok := m.PeerID.(*tg.PeerUser)
+	peerUser, ok := m.FromID.(*tg.PeerUser)
 	if !ok {
 		if _, err := reply.Text(ctx, "Invalid"); err != nil {
 			return err
