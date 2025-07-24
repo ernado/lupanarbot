@@ -42,7 +42,7 @@ func Random() Element {
 
 	// Convert bytes to uint32 and get index within bounds.
 	randomUint32 := binary.BigEndian.Uint32(randomBytes)
-	randomIndex := int(randomUint32 % uint32(totalElements))
+	randomIndex := int(randomUint32 % uint32(totalElements)) //#nosec:G115
 
 	return Elements[randomIndex]
 }
