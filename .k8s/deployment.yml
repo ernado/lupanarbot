@@ -49,10 +49,10 @@ spec:
           image: ghcr.io/ernado/lupanarbot:main
           resources:
             requests:
-              cpu: 500m
-              memory: 128M
+              cpu: 100m
+              memory: 64M
             limits:
-              cpu: "1"
+              cpu: 500m
               memory: 256M
           env:
             - name: GOMEMLIMIT
