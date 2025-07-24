@@ -12,7 +12,7 @@ import (
 )
 
 type Element struct {
-	ID    int    `json:"id"`
+	ID    int64  `json:"id"`
 	Title string `json:"title"`
 }
 
@@ -42,7 +42,8 @@ func Random() Element {
 
 	// Convert bytes to uint32 and get index within bounds
 	randomUint32 := binary.BigEndian.Uint32(randomBytes)
-	randomIndex := int(randomUint32) % totalElements
+	// Use uint64 to avoid overflow on 32-bit systems
+	randomIndex := int(uint64(randomUint32) % uint64(totalElements))
 
 	return Elements[randomIndex]
 }
