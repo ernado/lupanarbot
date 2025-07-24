@@ -1,7 +1,7 @@
 package entdb
 
 import (
-	"github.com/cydev/cgbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/ent"
 )
 
 type DB struct {

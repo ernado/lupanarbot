@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/cydev/cgbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
 )
 
 // TelegramSession is the model entity for the TelegramSession schema.

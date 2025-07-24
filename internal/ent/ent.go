@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/cydev/cgbot/internal/ent/telegramchannel"
-	"github.com/cydev/cgbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
+	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
 )
 
 // ent aliases to avoid import conflicts in user's code.

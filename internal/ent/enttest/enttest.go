@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/cydev/cgbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/ent"
 	// required by schema hooks.
-	_ "github.com/cydev/cgbot/internal/ent/runtime"
+	_ "github.com/ernado/lupanarbot/internal/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/cydev/cgbot/internal/ent/migrate"
+	"github.com/ernado/lupanarbot/internal/ent/migrate"
 )
 
 type (

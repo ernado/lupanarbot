@@ -1,4 +1,4 @@
-module github.com/cydev/cgbot
+module github.com/ernado/lupanarbot
 
 go 1.24.0
 

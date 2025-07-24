@@ -10,7 +10,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/cydev/cgbot/internal/ent/telegramchannel"
+	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
 )
 
 // TelegramChannelCreate is the builder for creating a TelegramChannel entity.

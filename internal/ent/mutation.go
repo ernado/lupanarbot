@@ -10,9 +10,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/cydev/cgbot/internal/ent/predicate"
-	"github.com/cydev/cgbot/internal/ent/telegramchannel"
-	"github.com/cydev/cgbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent/predicate"
+	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
+	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
 )
 
 const (

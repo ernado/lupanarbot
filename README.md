@@ -1,7 +1,7 @@
 # cgbot
 
 
-Bot for CyGame Telegram chats.
+Bot for lupanar chats.
 
 ## Skip deploy
 

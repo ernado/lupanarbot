@@ -9,13 +9,13 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/cydev/cgbot/internal/ent/migrate"
+	"github.com/ernado/lupanarbot/internal/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/cydev/cgbot/internal/ent/telegramchannel"
-	"github.com/cydev/cgbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
+	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
 )
 
 // Client is the client that holds all ent builders.

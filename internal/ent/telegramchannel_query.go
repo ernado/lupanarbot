@@ -11,8 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/cydev/cgbot/internal/ent/predicate"
-	"github.com/cydev/cgbot/internal/ent/telegramchannel"
+	"github.com/ernado/lupanarbot/internal/ent/predicate"
+	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
 )
 
 // TelegramChannelQuery is the builder for querying TelegramChannel entities.

@@ -15,8 +15,8 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 
-	entdb "github.com/cydev/cgbot/internal/db"
-	"github.com/cydev/cgbot/internal/ent"
+	entdb "github.com/ernado/lupanarbot/internal/db"
+	"github.com/ernado/lupanarbot/internal/ent"
 )
 
 type Application struct {
@@ -182,7 +182,7 @@ func main() {
 			api:    tg.NewClient(client),
 			client: client,
 			waiter: waiter,
-			trace:  t.TracerProvider().Tracer("recam.bot"),
+			trace:  t.TracerProvider().Tracer("lupanar.bot"),
 		}
 		dispatcher.OnChannelParticipant(a.onChannelParticipant)
 		dispatcher.OnNewMessage(a.onNewMessage)

@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/cydev/cgbot/internal/ent/predicate"
-	"github.com/cydev/cgbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent/predicate"
+	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
 )
 
 // TelegramSessionUpdate is the builder for updating TelegramSession entities.

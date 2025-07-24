@@ -7,7 +7,7 @@ import (
 	"github.com/go-faster/errors"
 	"github.com/gotd/td/session"
 
-	"github.com/cydev/cgbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/ent"
 )
 
 type SessionStorage struct {

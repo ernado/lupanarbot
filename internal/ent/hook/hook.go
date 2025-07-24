@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/cydev/cgbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/ent"
 )
 
 // The TelegramChannelFunc type is an adapter to allow the use of ordinary

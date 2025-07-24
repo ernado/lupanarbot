@@ -13,7 +13,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
 
-	"github.com/cydev/cgbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/ent"
 )
 
 // Open new connection.

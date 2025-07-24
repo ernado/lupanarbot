@@ -4,7 +4,7 @@ package telegramsession
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/cydev/cgbot/internal/ent/predicate"
+	"github.com/ernado/lupanarbot/internal/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

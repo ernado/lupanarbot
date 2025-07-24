@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/cydev/cgbot/internal/ent/telegramchannel"
+	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
 )
 
 // TelegramChannel is the model entity for the TelegramChannel schema.

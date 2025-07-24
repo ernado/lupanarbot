@@ -7,10 +7,10 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
-	"github.com/cydev/cgbot/internal/ent"
-	"github.com/cydev/cgbot/internal/ent/predicate"
-	"github.com/cydev/cgbot/internal/ent/telegramchannel"
-	"github.com/cydev/cgbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/ent/predicate"
+	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
+	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
 )
 
 // The Query interface represents an operation that queries a graph.
