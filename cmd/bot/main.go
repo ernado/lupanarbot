@@ -147,13 +147,13 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 		zap.Int64("user_id", user.ID),
 	)
 	switch m.Message {
-	case "/start":
+	case "/start", "/start@lupanar_chatbot":
 		if _, err := reply.Text(ctx, "Hello, "+user.FirstName+"!"); err != nil {
 			return errors.Wrap(err, "send message")
 		}
-	case "/extremism":
-		e := minust.Random()
-		text := fmt.Sprintf("%d. %s", e.ID, e.Title)
+	case "/extremism", "/extremism@lupanar_chatbot":
+		elem := minust.Random()
+		text := fmt.Sprintf("%d. %s", elem.ID, elem.Title)
 		if _, err := reply.Text(ctx, text); err != nil {
 			return errors.Wrap(err, "send message")
 		}
