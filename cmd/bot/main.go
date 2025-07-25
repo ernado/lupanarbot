@@ -137,7 +137,7 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 		reply  = sender.Reply(e, u)
 		lg     = zctx.From(ctx).With(zap.Int("msg.id", m.ID))
 	)
-	userID, ok := extractUserID(e, m)
+	userID, ok := extractUserID(m)
 	if !ok {
 		if _, err := reply.Text(ctx, "Invalid"); err != nil {
 			return err
