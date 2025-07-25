@@ -115,7 +115,7 @@ func (a *Application) onChannelParticipant(ctx context.Context, e tg.Entities, u
 	return nil
 }
 
-func extractUserID(e tg.Entities, m *tg.Message) (int64, bool) {
+func extractUserID(m *tg.Message) (int64, bool) {
 	if peerUser, ok := m.FromID.(*tg.PeerUser); ok {
 		return peerUser.UserID, true
 	}
