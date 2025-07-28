@@ -18,6 +18,7 @@ import (
 
 	entdb "github.com/ernado/lupanarbot/internal/db"
 	"github.com/ernado/lupanarbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/laws"
 	"github.com/ernado/lupanarbot/internal/minust"
 )
 
@@ -59,7 +60,11 @@ func (a *Application) Run(ctx context.Context) error {
 					},
 					{
 						Command:     "extremism",
-						Description: "Какой экстремизм ты сегодня",
+						Description: "Какой экстремизм ты сегодня?",
+					},
+					{
+						Command:     "article",
+						Description: "Какая статья ты сегодня?",
 					},
 				},
 			}); err != nil {
@@ -164,6 +169,18 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 		elem := minust.Random()
 		text := fmt.Sprintf("%d. %s", elem.ID, elem.Title)
 		if _, err := reply.Text(ctx, text); err != nil {
+			return errors.Wrap(err, "send message")
+		}
+	case "/article", "/article@lupanar_chatbot":
+		article, err := laws.RandomArticle()
+		if err != nil {
+			lg.Error("Failed to get random article", zap.Error(err))
+			if _, err := reply.Text(ctx, "Failed to get article"); err != nil {
+				return errors.Wrap(err, "send message")
+			}
+			return nil
+		}
+		if _, err := reply.Text(ctx, article.Text); err != nil {
 			return errors.Wrap(err, "send message")
 		}
 	}
