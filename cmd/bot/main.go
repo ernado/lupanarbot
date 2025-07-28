@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
 	"github.com/go-faster/sdk/zctx"
@@ -141,7 +142,9 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 			SetID(userID).
 			SetType(tryType).
 			SetCreatedAt(now).
-			OnConflict().
+			OnConflict(
+				sql.ResolveWithNewValues(),
+			).
 			Update(func(upsert *ent.TryUpsert) {
 				upsert.SetCreatedAt(now)
 			}).
