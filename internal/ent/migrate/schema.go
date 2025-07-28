@@ -8,18 +8,6 @@ import (
 )
 
 var (
-	// LastTriesColumns holds the columns for the "last_tries" table.
-	LastTriesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "try", Type: field.TypeTime},
-		{Name: "type", Type: field.TypeEnum, Enums: []string{"Extremism", "Constitution", "CriminalCode"}},
-	}
-	// LastTriesTable holds the schema information for the "last_tries" table.
-	LastTriesTable = &schema.Table{
-		Name:       "last_tries",
-		Columns:    LastTriesColumns,
-		PrimaryKey: []*schema.Column{LastTriesColumns[0]},
-	}
 	// TelegramChannelsColumns holds the columns for the "telegram_channels" table.
 	TelegramChannelsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
@@ -44,11 +32,30 @@ var (
 		Columns:    TelegramSessionsColumns,
 		PrimaryKey: []*schema.Column{TelegramSessionsColumns[0]},
 	}
+	// TriesColumns holds the columns for the "tries" table.
+	TriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"Extremism", "Constitution", "CriminalCode"}},
+	}
+	// TriesTable holds the schema information for the "tries" table.
+	TriesTable = &schema.Table{
+		Name:       "tries",
+		Columns:    TriesColumns,
+		PrimaryKey: []*schema.Column{TriesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "try_id_type",
+				Unique:  true,
+				Columns: []*schema.Column{TriesColumns[0], TriesColumns[2]},
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
-		LastTriesTable,
 		TelegramChannelsTable,
 		TelegramSessionsTable,
+		TriesTable,
 	}
 )
 

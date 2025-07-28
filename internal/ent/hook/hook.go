@@ -9,18 +9,6 @@ import (
 	"github.com/ernado/lupanarbot/internal/ent"
 )
 
-// The LastTryFunc type is an adapter to allow the use of ordinary
-// function as LastTry mutator.
-type LastTryFunc func(context.Context, *ent.LastTryMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f LastTryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.LastTryMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LastTryMutation", m)
-}
-
 // The TelegramChannelFunc type is an adapter to allow the use of ordinary
 // function as TelegramChannel mutator.
 type TelegramChannelFunc func(context.Context, *ent.TelegramChannelMutation) (ent.Value, error)
@@ -43,6 +31,18 @@ func (f TelegramSessionFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Va
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TelegramSessionMutation", m)
+}
+
+// The TryFunc type is an adapter to allow the use of ordinary
+// function as Try mutator.
+type TryFunc func(context.Context, *ent.TryMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f TryFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.TryMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.TryMutation", m)
 }
 
 // Condition is a hook condition function.

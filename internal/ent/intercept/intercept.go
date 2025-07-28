@@ -8,10 +8,10 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/ernado/lupanarbot/internal/ent"
-	"github.com/ernado/lupanarbot/internal/ent/lasttry"
 	"github.com/ernado/lupanarbot/internal/ent/predicate"
 	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
 	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent/try"
 )
 
 // The Query interface represents an operation that queries a graph.
@@ -70,33 +70,6 @@ func (f TraverseFunc) Traverse(ctx context.Context, q ent.Query) error {
 	return f(ctx, query)
 }
 
-// The LastTryFunc type is an adapter to allow the use of ordinary function as a Querier.
-type LastTryFunc func(context.Context, *ent.LastTryQuery) (ent.Value, error)
-
-// Query calls f(ctx, q).
-func (f LastTryFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
-	if q, ok := q.(*ent.LastTryQuery); ok {
-		return f(ctx, q)
-	}
-	return nil, fmt.Errorf("unexpected query type %T. expect *ent.LastTryQuery", q)
-}
-
-// The TraverseLastTry type is an adapter to allow the use of ordinary function as Traverser.
-type TraverseLastTry func(context.Context, *ent.LastTryQuery) error
-
-// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
-func (f TraverseLastTry) Intercept(next ent.Querier) ent.Querier {
-	return next
-}
-
-// Traverse calls f(ctx, q).
-func (f TraverseLastTry) Traverse(ctx context.Context, q ent.Query) error {
-	if q, ok := q.(*ent.LastTryQuery); ok {
-		return f(ctx, q)
-	}
-	return fmt.Errorf("unexpected query type %T. expect *ent.LastTryQuery", q)
-}
-
 // The TelegramChannelFunc type is an adapter to allow the use of ordinary function as a Querier.
 type TelegramChannelFunc func(context.Context, *ent.TelegramChannelQuery) (ent.Value, error)
 
@@ -151,15 +124,42 @@ func (f TraverseTelegramSession) Traverse(ctx context.Context, q ent.Query) erro
 	return fmt.Errorf("unexpected query type %T. expect *ent.TelegramSessionQuery", q)
 }
 
+// The TryFunc type is an adapter to allow the use of ordinary function as a Querier.
+type TryFunc func(context.Context, *ent.TryQuery) (ent.Value, error)
+
+// Query calls f(ctx, q).
+func (f TryFunc) Query(ctx context.Context, q ent.Query) (ent.Value, error) {
+	if q, ok := q.(*ent.TryQuery); ok {
+		return f(ctx, q)
+	}
+	return nil, fmt.Errorf("unexpected query type %T. expect *ent.TryQuery", q)
+}
+
+// The TraverseTry type is an adapter to allow the use of ordinary function as Traverser.
+type TraverseTry func(context.Context, *ent.TryQuery) error
+
+// Intercept is a dummy implementation of Intercept that returns the next Querier in the pipeline.
+func (f TraverseTry) Intercept(next ent.Querier) ent.Querier {
+	return next
+}
+
+// Traverse calls f(ctx, q).
+func (f TraverseTry) Traverse(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.TryQuery); ok {
+		return f(ctx, q)
+	}
+	return fmt.Errorf("unexpected query type %T. expect *ent.TryQuery", q)
+}
+
 // NewQuery returns the generic Query interface for the given typed query.
 func NewQuery(q ent.Query) (Query, error) {
 	switch q := q.(type) {
-	case *ent.LastTryQuery:
-		return &query[*ent.LastTryQuery, predicate.LastTry, lasttry.OrderOption]{typ: ent.TypeLastTry, tq: q}, nil
 	case *ent.TelegramChannelQuery:
 		return &query[*ent.TelegramChannelQuery, predicate.TelegramChannel, telegramchannel.OrderOption]{typ: ent.TypeTelegramChannel, tq: q}, nil
 	case *ent.TelegramSessionQuery:
 		return &query[*ent.TelegramSessionQuery, predicate.TelegramSession, telegramsession.OrderOption]{typ: ent.TypeTelegramSession, tq: q}, nil
+	case *ent.TryQuery:
+		return &query[*ent.TryQuery, predicate.Try, try.OrderOption]{typ: ent.TypeTry, tq: q}, nil
 	default:
 		return nil, fmt.Errorf("unknown query type %T", q)
 	}

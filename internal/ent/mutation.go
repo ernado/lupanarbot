@@ -11,10 +11,10 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/ernado/lupanarbot/internal/ent/lasttry"
 	"github.com/ernado/lupanarbot/internal/ent/predicate"
 	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
 	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent/try"
 )
 
 const (
@@ -26,396 +26,10 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeLastTry         = "LastTry"
 	TypeTelegramChannel = "TelegramChannel"
 	TypeTelegramSession = "TelegramSession"
+	TypeTry             = "Try"
 )
-
-// LastTryMutation represents an operation that mutates the LastTry nodes in the graph.
-type LastTryMutation struct {
-	config
-	op            Op
-	typ           string
-	id            *int64
-	try           *time.Time
-	_type         *lasttry.Type
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*LastTry, error)
-	predicates    []predicate.LastTry
-}
-
-var _ ent.Mutation = (*LastTryMutation)(nil)
-
-// lasttryOption allows management of the mutation configuration using functional options.
-type lasttryOption func(*LastTryMutation)
-
-// newLastTryMutation creates new mutation for the LastTry entity.
-func newLastTryMutation(c config, op Op, opts ...lasttryOption) *LastTryMutation {
-	m := &LastTryMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeLastTry,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withLastTryID sets the ID field of the mutation.
-func withLastTryID(id int64) lasttryOption {
-	return func(m *LastTryMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *LastTry
-		)
-		m.oldValue = func(ctx context.Context) (*LastTry, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().LastTry.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withLastTry sets the old LastTry of the mutation.
-func withLastTry(node *LastTry) lasttryOption {
-	return func(m *LastTryMutation) {
-		m.oldValue = func(context.Context) (*LastTry, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m LastTryMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m LastTryMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of LastTry entities.
-func (m *LastTryMutation) SetID(id int64) {
-	m.id = &id
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *LastTryMutation) ID() (id int64, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *LastTryMutation) IDs(ctx context.Context) ([]int64, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int64{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().LastTry.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetTry sets the "try" field.
-func (m *LastTryMutation) SetTry(t time.Time) {
-	m.try = &t
-}
-
-// Try returns the value of the "try" field in the mutation.
-func (m *LastTryMutation) Try() (r time.Time, exists bool) {
-	v := m.try
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTry returns the old "try" field's value of the LastTry entity.
-// If the LastTry object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LastTryMutation) OldTry(ctx context.Context) (v time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTry is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTry requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTry: %w", err)
-	}
-	return oldValue.Try, nil
-}
-
-// ResetTry resets all changes to the "try" field.
-func (m *LastTryMutation) ResetTry() {
-	m.try = nil
-}
-
-// SetType sets the "type" field.
-func (m *LastTryMutation) SetType(l lasttry.Type) {
-	m._type = &l
-}
-
-// GetType returns the value of the "type" field in the mutation.
-func (m *LastTryMutation) GetType() (r lasttry.Type, exists bool) {
-	v := m._type
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldType returns the old "type" field's value of the LastTry entity.
-// If the LastTry object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LastTryMutation) OldType(ctx context.Context) (v lasttry.Type, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldType is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldType requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldType: %w", err)
-	}
-	return oldValue.Type, nil
-}
-
-// ResetType resets all changes to the "type" field.
-func (m *LastTryMutation) ResetType() {
-	m._type = nil
-}
-
-// Where appends a list predicates to the LastTryMutation builder.
-func (m *LastTryMutation) Where(ps ...predicate.LastTry) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the LastTryMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *LastTryMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.LastTry, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *LastTryMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *LastTryMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (LastTry).
-func (m *LastTryMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *LastTryMutation) Fields() []string {
-	fields := make([]string, 0, 2)
-	if m.try != nil {
-		fields = append(fields, lasttry.FieldTry)
-	}
-	if m._type != nil {
-		fields = append(fields, lasttry.FieldType)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *LastTryMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case lasttry.FieldTry:
-		return m.Try()
-	case lasttry.FieldType:
-		return m.GetType()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *LastTryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case lasttry.FieldTry:
-		return m.OldTry(ctx)
-	case lasttry.FieldType:
-		return m.OldType(ctx)
-	}
-	return nil, fmt.Errorf("unknown LastTry field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *LastTryMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case lasttry.FieldTry:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTry(v)
-		return nil
-	case lasttry.FieldType:
-		v, ok := value.(lasttry.Type)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetType(v)
-		return nil
-	}
-	return fmt.Errorf("unknown LastTry field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *LastTryMutation) AddedFields() []string {
-	return nil
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *LastTryMutation) AddedField(name string) (ent.Value, bool) {
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *LastTryMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	}
-	return fmt.Errorf("unknown LastTry numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *LastTryMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *LastTryMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *LastTryMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown LastTry nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *LastTryMutation) ResetField(name string) error {
-	switch name {
-	case lasttry.FieldTry:
-		m.ResetTry()
-		return nil
-	case lasttry.FieldType:
-		m.ResetType()
-		return nil
-	}
-	return fmt.Errorf("unknown LastTry field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *LastTryMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *LastTryMutation) AddedIDs(name string) []ent.Value {
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *LastTryMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *LastTryMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *LastTryMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *LastTryMutation) EdgeCleared(name string) bool {
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *LastTryMutation) ClearEdge(name string) error {
-	return fmt.Errorf("unknown LastTry unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *LastTryMutation) ResetEdge(name string) error {
-	return fmt.Errorf("unknown LastTry edge %s", name)
-}
 
 // TelegramChannelMutation represents an operation that mutates the TelegramChannel nodes in the graph.
 type TelegramChannelMutation struct {
@@ -1223,4 +837,390 @@ func (m *TelegramSessionMutation) ClearEdge(name string) error {
 // It returns an error if the edge is not defined in the schema.
 func (m *TelegramSessionMutation) ResetEdge(name string) error {
 	return fmt.Errorf("unknown TelegramSession edge %s", name)
+}
+
+// TryMutation represents an operation that mutates the Try nodes in the graph.
+type TryMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int64
+	created_at    *time.Time
+	_type         *try.Type
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*Try, error)
+	predicates    []predicate.Try
+}
+
+var _ ent.Mutation = (*TryMutation)(nil)
+
+// tryOption allows management of the mutation configuration using functional options.
+type tryOption func(*TryMutation)
+
+// newTryMutation creates new mutation for the Try entity.
+func newTryMutation(c config, op Op, opts ...tryOption) *TryMutation {
+	m := &TryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeTry,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withTryID sets the ID field of the mutation.
+func withTryID(id int64) tryOption {
+	return func(m *TryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *Try
+		)
+		m.oldValue = func(ctx context.Context) (*Try, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().Try.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withTry sets the old Try of the mutation.
+func withTry(node *Try) tryOption {
+	return func(m *TryMutation) {
+		m.oldValue = func(context.Context) (*Try, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m TryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m TryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of Try entities.
+func (m *TryMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *TryMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *TryMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().Try.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (m *TryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *TryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Try entity.
+// If the Try object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *TryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
+// SetType sets the "type" field.
+func (m *TryMutation) SetType(t try.Type) {
+	m._type = &t
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *TryMutation) GetType() (r try.Type, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the Try entity.
+// If the Try object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TryMutation) OldType(ctx context.Context) (v try.Type, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *TryMutation) ResetType() {
+	m._type = nil
+}
+
+// Where appends a list predicates to the TryMutation builder.
+func (m *TryMutation) Where(ps ...predicate.Try) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the TryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *TryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.Try, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *TryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *TryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (Try).
+func (m *TryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *TryMutation) Fields() []string {
+	fields := make([]string, 0, 2)
+	if m.created_at != nil {
+		fields = append(fields, try.FieldCreatedAt)
+	}
+	if m._type != nil {
+		fields = append(fields, try.FieldType)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *TryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case try.FieldCreatedAt:
+		return m.CreatedAt()
+	case try.FieldType:
+		return m.GetType()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *TryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case try.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
+	case try.FieldType:
+		return m.OldType(ctx)
+	}
+	return nil, fmt.Errorf("unknown Try field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case try.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
+		return nil
+	case try.FieldType:
+		v, ok := value.(try.Type)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
+		return nil
+	}
+	return fmt.Errorf("unknown Try field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *TryMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *TryMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *TryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown Try numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *TryMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *TryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *TryMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown Try nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *TryMutation) ResetField(name string) error {
+	switch name {
+	case try.FieldCreatedAt:
+		m.ResetCreatedAt()
+		return nil
+	case try.FieldType:
+		m.ResetType()
+		return nil
+	}
+	return fmt.Errorf("unknown Try field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *TryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *TryMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *TryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *TryMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *TryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *TryMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *TryMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown Try unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *TryMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown Try edge %s", name)
 }

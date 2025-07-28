@@ -6,11 +6,11 @@ import (
 	"entgo.io/ent/dialect/sql"
 )
 
-// LastTry is the predicate function for lasttry builders.
-type LastTry func(*sql.Selector)
-
 // TelegramChannel is the predicate function for telegramchannel builders.
 type TelegramChannel func(*sql.Selector)
 
 // TelegramSession is the predicate function for telegramsession builders.
 type TelegramSession func(*sql.Selector)
+
+// Try is the predicate function for try builders.
+type Try func(*sql.Selector)

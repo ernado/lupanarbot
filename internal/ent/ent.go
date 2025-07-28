@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/ernado/lupanarbot/internal/ent/lasttry"
 	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
 	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
+	"github.com/ernado/lupanarbot/internal/ent/try"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -75,9 +75,9 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			lasttry.Table:         lasttry.ValidColumn,
 			telegramchannel.Table: telegramchannel.ValidColumn,
 			telegramsession.Table: telegramsession.ValidColumn,
+			try.Table:             try.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

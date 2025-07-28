@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/go-faster/errors"
 	"github.com/go-faster/sdk/app"
@@ -14,10 +15,12 @@ import (
 	"github.com/gotd/td/telegram/message"
 	"github.com/gotd/td/tg"
 	"go.opentelemetry.io/otel/trace"
+	"go.uber.org/multierr"
 	"go.uber.org/zap"
 
 	entdb "github.com/ernado/lupanarbot/internal/db"
 	"github.com/ernado/lupanarbot/internal/ent"
+	"github.com/ernado/lupanarbot/internal/ent/try"
 	"github.com/ernado/lupanarbot/internal/laws"
 	"github.com/ernado/lupanarbot/internal/minust"
 )
@@ -130,6 +133,44 @@ func extractUserID(m *tg.Message) (int64, bool) {
 	return 0, false
 }
 
+func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Type) (rerr error) {
+	now := time.Now()
+
+	defer func() {
+		// Upsert the try record, regardless of whether it exists or not.
+		if err := a.db.Try.Create().
+			SetID(userID).
+			SetType(tryType).
+			SetCreatedAt(now).
+			OnConflict().
+			Update(func(upsert *ent.TryUpsert) {
+				upsert.SetCreatedAt(now)
+			}).
+			Exec(ctx); err != nil {
+			rerr = multierr.Append(rerr, errors.Wrap(err, "upsert last try"))
+		}
+	}()
+
+	// If last try was more than 24 hours ago, allow the user to try again.
+	lastTry, err := a.db.Try.Query().Where(
+		try.ID(userID),
+		try.TypeEQ(tryType),
+	).Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil // No previous try, allow the user to try again.
+		}
+		return errors.Wrap(err, "get last try")
+	}
+
+	deadline := now.AddDate(0, 0, -1) // 24 hours ago
+	if lastTry.CreatedAt.Before(deadline) {
+		return nil // Last try was more than 24 hours ago, allow the user to try again.
+	}
+
+	return errors.New("Попробуйте позже")
+}
+
 func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMessage) error {
 	ctx, span := a.trace.Start(ctx, "OnNewMessage")
 	defer span.End()
@@ -181,6 +222,18 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 			return nil
 		}
 		if _, err := reply.Text(ctx, article.Text); err != nil {
+			return errors.Wrap(err, "send message")
+		}
+	case "/constitution", "/constitution@lupanar_chatbot":
+		article, err := laws.RandomConstitutionArticle()
+		if err != nil {
+			lg.Error("Failed to get random constitution article", zap.Error(err))
+			if _, err := reply.Text(ctx, "Failed to get constitution article"); err != nil {
+				return errors.Wrap(err, "send message")
+			}
+			return nil
+		}
+		if _, err := reply.Text(ctx, article.Title+"\n"+article.Text); err != nil {
 			return errors.Wrap(err, "send message")
 		}
 	}
