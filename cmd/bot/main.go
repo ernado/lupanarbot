@@ -219,12 +219,12 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 		if err != nil {
 			lg.Error("Failed to check try", zap.Error(err))
 			if _, err := reply.Text(ctx, "Внутренняя ошибка"); err != nil {
-				return errors.Wrap(err, "send message")
+				return false, errors.Wrap(err, "send message")
 			}
 			return false, nil
 		} else if !ok {
 			if _, err := reply.Text(ctx, "Вы уже пробовали сегодня"); err != nil {
-				return errors.Wrap(err, "send message")
+				return false, errors.Wrap(err, "send message")
 			}
 			return false, nil
 		}
