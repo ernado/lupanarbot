@@ -138,6 +138,18 @@ func extractUserID(m *tg.Message) (int64, bool) {
 	return 0, false
 }
 
+func sameDay(t1, t2 time.Time) bool {
+	loc, err := time.LoadLocation("GMT+3")
+	if err != nil {
+		loc = time.UTC // Fallback to UTC if loading fails
+	}
+
+	t1 = t1.In(loc)
+	t2 = t2.In(loc)
+
+	return t1.Year() == t2.Year() && t1.YearDay() == t2.YearDay()
+}
+
 func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Type) (ok bool, rerr error) {
 	now := time.Now()
 
@@ -175,8 +187,7 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 		return false, errors.Wrap(err, "get last try")
 	}
 
-	deadline := now.AddDate(0, 0, -1) // 24 hours ago
-	if lastTry.CreatedAt.Before(deadline) {
+	if !sameDay(lastTry.CreatedAt, now) {
 		return true, nil
 	}
 
