@@ -268,7 +268,7 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 			return errors.Wrap(err, "send message")
 		}
 	case "/article", "/article@lupanar_chatbot":
-		if ok, err := recordTry(try.TypeExtremism); err != nil {
+		if ok, err := recordTry(try.TypeCriminalCode); err != nil {
 			return err
 		} else if !ok {
 			return nil
@@ -286,7 +286,7 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 			return errors.Wrap(err, "send message")
 		}
 	case "/constitution", "/constitution@lupanar_chatbot":
-		if ok, err := recordTry(try.TypeExtremism); err != nil {
+		if ok, err := recordTry(try.TypeConstitution); err != nil {
 			return err
 		} else if !ok {
 			return nil
