@@ -147,8 +147,9 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 			SetType(tryType).
 			SetCreatedAt(now).
 			OnConflict(
-				sql.ConflictConstraint(
-					"try_user_id_type",
+				sql.ConflictColumns(
+					try.FieldUserID,
+					try.FieldType,
 				),
 				sql.ResolveWithNewValues(),
 			).
@@ -212,13 +213,10 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 		zap.String("last_name", user.LastName),
 		zap.Int64("user_id", user.ID),
 	)
-	switch m.Message {
-	case "/start", "/start@lupanar_chatbot":
-		if _, err := reply.Text(ctx, "Hello, "+user.FirstName+"!"); err != nil {
-			return errors.Wrap(err, "send message")
-		}
-	case "/extremism", "/extremism@lupanar_chatbot":
-		if ok, err := a.checkTry(ctx, userID, try.TypeExtremism); err != nil {
+
+	recordTry := func(tryType try.Type) error {
+		ok, err := a.checkTry(ctx, userID, tryType)
+		if err != nil {
 			lg.Error("Failed to check try", zap.Error(err))
 			if _, err := reply.Text(ctx, "Внутренняя ошибка"); err != nil {
 				return errors.Wrap(err, "send message")
@@ -229,6 +227,18 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 				return errors.Wrap(err, "send message")
 			}
 			return nil
+		}
+		return nil
+	}
+
+	switch m.Message {
+	case "/start", "/start@lupanar_chatbot":
+		if _, err := reply.Text(ctx, "Hello, "+user.FirstName+"!"); err != nil {
+			return errors.Wrap(err, "send message")
+		}
+	case "/extremism", "/extremism@lupanar_chatbot":
+		if err := recordTry(try.TypeExtremism); err != nil {
+			return err
 		}
 
 		elem := minust.Random()
@@ -237,17 +247,8 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 			return errors.Wrap(err, "send message")
 		}
 	case "/article", "/article@lupanar_chatbot":
-		if ok, err := a.checkTry(ctx, userID, try.TypeCriminalCode); err != nil {
-			lg.Error("Failed to check try", zap.Error(err))
-			if _, err := reply.Text(ctx, "Внутренняя ошибка"); err != nil {
-				return errors.Wrap(err, "send message")
-			}
-			return nil
-		} else if !ok {
-			if _, err := reply.Text(ctx, "Вы уже пробовали сегодня"); err != nil {
-				return errors.Wrap(err, "send message")
-			}
-			return nil
+		if err := recordTry(try.TypeCriminalCode); err != nil {
+			return err
 		}
 
 		article, err := laws.RandomArticle()
@@ -262,17 +263,8 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 			return errors.Wrap(err, "send message")
 		}
 	case "/constitution", "/constitution@lupanar_chatbot":
-		if ok, err := a.checkTry(ctx, userID, try.TypeConstitution); err != nil {
-			lg.Error("Failed to check try", zap.Error(err))
-			if _, err := reply.Text(ctx, "Внутренняя ошибка"); err != nil {
-				return errors.Wrap(err, "send message")
-			}
-			return nil
-		} else if !ok {
-			if _, err := reply.Text(ctx, "Вы уже пробовали сегодня"); err != nil {
-				return errors.Wrap(err, "send message")
-			}
-			return nil
+		if err := recordTry(try.TypeConstitution); err != nil {
+			return err
 		}
 
 		article, err := laws.RandomConstitutionArticle()
