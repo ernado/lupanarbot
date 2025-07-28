@@ -12,6 +12,7 @@ var (
 	LastTriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "try", Type: field.TypeTime},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"Extremism", "Constitution", "CriminalCode"}},
 	}
 	// LastTriesTable holds the schema information for the "last_tries" table.
 	LastTriesTable = &schema.Table{

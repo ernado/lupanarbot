@@ -3,6 +3,8 @@
 package lasttry
 
 import (
+	"fmt"
+
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -13,6 +15,8 @@ const (
 	FieldID = "id"
 	// FieldTry holds the string denoting the try field in the database.
 	FieldTry = "try"
+	// FieldType holds the string denoting the type field in the database.
+	FieldType = "type"
 	// Table holds the table name of the lasttry in the database.
 	Table = "last_tries"
 )
@@ -21,6 +25,7 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldTry,
+	FieldType,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -31,6 +36,30 @@ func ValidColumn(column string) bool {
 		}
 	}
 	return false
+}
+
+// Type defines the type for the "type" enum field.
+type Type string
+
+// Type values.
+const (
+	TypeExtremism    Type = "Extremism"
+	TypeConstitution Type = "Constitution"
+	TypeCriminalCode Type = "CriminalCode"
+)
+
+func (_type Type) String() string {
+	return string(_type)
+}
+
+// TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
+func TypeValidator(_type Type) error {
+	switch _type {
+	case TypeExtremism, TypeConstitution, TypeCriminalCode:
+		return nil
+	default:
+		return fmt.Errorf("lasttry: invalid enum value for type field: %q", _type)
+	}
 }
 
 // OrderOption defines the ordering options for the LastTry queries.
@@ -44,4 +73,9 @@ func ByID(opts ...sql.OrderTermOption) OrderOption {
 // ByTry orders the results by the try field.
 func ByTry(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTry, opts...).ToFunc()
+}
+
+// ByType orders the results by the type field.
+func ByType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldType, opts...).ToFunc()
 }

@@ -14,5 +14,6 @@ func (LastTry) Fields() []ent.Field {
 	return []ent.Field{
 		field.Int64("id"),
 		field.Time("try"),
+		field.Enum("type").Values("Extremism", "Constitution", "CriminalCode"),
 	}
 }

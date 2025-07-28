@@ -18,7 +18,9 @@ type LastTry struct {
 	// ID of the ent.
 	ID int64 `json:"id,omitempty"`
 	// Try holds the value of the "try" field.
-	Try          time.Time `json:"try,omitempty"`
+	Try time.Time `json:"try,omitempty"`
+	// Type holds the value of the "type" field.
+	Type         lasttry.Type `json:"type,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -29,6 +31,8 @@ func (*LastTry) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case lasttry.FieldID:
 			values[i] = new(sql.NullInt64)
+		case lasttry.FieldType:
+			values[i] = new(sql.NullString)
 		case lasttry.FieldTry:
 			values[i] = new(sql.NullTime)
 		default:
@@ -57,6 +61,12 @@ func (lt *LastTry) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field try", values[i])
 			} else if value.Valid {
 				lt.Try = value.Time
+			}
+		case lasttry.FieldType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field type", values[i])
+			} else if value.Valid {
+				lt.Type = lasttry.Type(value.String)
 			}
 		default:
 			lt.selectValues.Set(columns[i], values[i])
@@ -96,6 +106,9 @@ func (lt *LastTry) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v, ", lt.ID))
 	builder.WriteString("try=")
 	builder.WriteString(lt.Try.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("type=")
+	builder.WriteString(fmt.Sprintf("%v", lt.Type))
 	builder.WriteByte(')')
 	return builder.String()
 }

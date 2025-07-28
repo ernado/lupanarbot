@@ -99,6 +99,26 @@ func TryLTE(v time.Time) predicate.LastTry {
 	return predicate.LastTry(sql.FieldLTE(FieldTry, v))
 }
 
+// TypeEQ applies the EQ predicate on the "type" field.
+func TypeEQ(v Type) predicate.LastTry {
+	return predicate.LastTry(sql.FieldEQ(FieldType, v))
+}
+
+// TypeNEQ applies the NEQ predicate on the "type" field.
+func TypeNEQ(v Type) predicate.LastTry {
+	return predicate.LastTry(sql.FieldNEQ(FieldType, v))
+}
+
+// TypeIn applies the In predicate on the "type" field.
+func TypeIn(vs ...Type) predicate.LastTry {
+	return predicate.LastTry(sql.FieldIn(FieldType, vs...))
+}
+
+// TypeNotIn applies the NotIn predicate on the "type" field.
+func TypeNotIn(vs ...Type) predicate.LastTry {
+	return predicate.LastTry(sql.FieldNotIn(FieldType, vs...))
+}
+
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.LastTry) predicate.LastTry {
 	return predicate.LastTry(sql.AndPredicates(predicates...))

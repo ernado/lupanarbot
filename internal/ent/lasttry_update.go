@@ -42,6 +42,20 @@ func (ltu *LastTryUpdate) SetNillableTry(t *time.Time) *LastTryUpdate {
 	return ltu
 }
 
+// SetType sets the "type" field.
+func (ltu *LastTryUpdate) SetType(l lasttry.Type) *LastTryUpdate {
+	ltu.mutation.SetType(l)
+	return ltu
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (ltu *LastTryUpdate) SetNillableType(l *lasttry.Type) *LastTryUpdate {
+	if l != nil {
+		ltu.SetType(*l)
+	}
+	return ltu
+}
+
 // Mutation returns the LastTryMutation object of the builder.
 func (ltu *LastTryUpdate) Mutation() *LastTryMutation {
 	return ltu.mutation
@@ -74,7 +88,20 @@ func (ltu *LastTryUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ltu *LastTryUpdate) check() error {
+	if v, ok := ltu.mutation.GetType(); ok {
+		if err := lasttry.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "LastTry.type": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (ltu *LastTryUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := ltu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(lasttry.Table, lasttry.Columns, sqlgraph.NewFieldSpec(lasttry.FieldID, field.TypeInt64))
 	if ps := ltu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -85,6 +112,9 @@ func (ltu *LastTryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ltu.mutation.Try(); ok {
 		_spec.SetField(lasttry.FieldTry, field.TypeTime, value)
+	}
+	if value, ok := ltu.mutation.GetType(); ok {
+		_spec.SetField(lasttry.FieldType, field.TypeEnum, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, ltu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -116,6 +146,20 @@ func (ltuo *LastTryUpdateOne) SetTry(t time.Time) *LastTryUpdateOne {
 func (ltuo *LastTryUpdateOne) SetNillableTry(t *time.Time) *LastTryUpdateOne {
 	if t != nil {
 		ltuo.SetTry(*t)
+	}
+	return ltuo
+}
+
+// SetType sets the "type" field.
+func (ltuo *LastTryUpdateOne) SetType(l lasttry.Type) *LastTryUpdateOne {
+	ltuo.mutation.SetType(l)
+	return ltuo
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (ltuo *LastTryUpdateOne) SetNillableType(l *lasttry.Type) *LastTryUpdateOne {
+	if l != nil {
+		ltuo.SetType(*l)
 	}
 	return ltuo
 }
@@ -165,7 +209,20 @@ func (ltuo *LastTryUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (ltuo *LastTryUpdateOne) check() error {
+	if v, ok := ltuo.mutation.GetType(); ok {
+		if err := lasttry.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "LastTry.type": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (ltuo *LastTryUpdateOne) sqlSave(ctx context.Context) (_node *LastTry, err error) {
+	if err := ltuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(lasttry.Table, lasttry.Columns, sqlgraph.NewFieldSpec(lasttry.FieldID, field.TypeInt64))
 	id, ok := ltuo.mutation.ID()
 	if !ok {
@@ -193,6 +250,9 @@ func (ltuo *LastTryUpdateOne) sqlSave(ctx context.Context) (_node *LastTry, err 
 	}
 	if value, ok := ltuo.mutation.Try(); ok {
 		_spec.SetField(lasttry.FieldTry, field.TypeTime, value)
+	}
+	if value, ok := ltuo.mutation.GetType(); ok {
+		_spec.SetField(lasttry.FieldType, field.TypeEnum, value)
 	}
 	_node = &LastTry{config: ltuo.config}
 	_spec.Assign = _node.assignValues

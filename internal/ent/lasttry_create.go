@@ -28,6 +28,12 @@ func (ltc *LastTryCreate) SetTry(t time.Time) *LastTryCreate {
 	return ltc
 }
 
+// SetType sets the "type" field.
+func (ltc *LastTryCreate) SetType(l lasttry.Type) *LastTryCreate {
+	ltc.mutation.SetType(l)
+	return ltc
+}
+
 // SetID sets the "id" field.
 func (ltc *LastTryCreate) SetID(i int64) *LastTryCreate {
 	ltc.mutation.SetID(i)
@@ -71,6 +77,14 @@ func (ltc *LastTryCreate) check() error {
 	if _, ok := ltc.mutation.Try(); !ok {
 		return &ValidationError{Name: "try", err: errors.New(`ent: missing required field "LastTry.try"`)}
 	}
+	if _, ok := ltc.mutation.GetType(); !ok {
+		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "LastTry.type"`)}
+	}
+	if v, ok := ltc.mutation.GetType(); ok {
+		if err := lasttry.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "LastTry.type": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -107,6 +121,10 @@ func (ltc *LastTryCreate) createSpec() (*LastTry, *sqlgraph.CreateSpec) {
 	if value, ok := ltc.mutation.Try(); ok {
 		_spec.SetField(lasttry.FieldTry, field.TypeTime, value)
 		_node.Try = value
+	}
+	if value, ok := ltc.mutation.GetType(); ok {
+		_spec.SetField(lasttry.FieldType, field.TypeEnum, value)
+		_node.Type = value
 	}
 	return _node, _spec
 }
@@ -172,6 +190,18 @@ func (u *LastTryUpsert) UpdateTry() *LastTryUpsert {
 	return u
 }
 
+// SetType sets the "type" field.
+func (u *LastTryUpsert) SetType(v lasttry.Type) *LastTryUpsert {
+	u.Set(lasttry.FieldType, v)
+	return u
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *LastTryUpsert) UpdateType() *LastTryUpsert {
+	u.SetExcluded(lasttry.FieldType)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create except the ID field.
 // Using this option is equivalent to using:
 //
@@ -231,6 +261,20 @@ func (u *LastTryUpsertOne) SetTry(v time.Time) *LastTryUpsertOne {
 func (u *LastTryUpsertOne) UpdateTry() *LastTryUpsertOne {
 	return u.Update(func(s *LastTryUpsert) {
 		s.UpdateTry()
+	})
+}
+
+// SetType sets the "type" field.
+func (u *LastTryUpsertOne) SetType(v lasttry.Type) *LastTryUpsertOne {
+	return u.Update(func(s *LastTryUpsert) {
+		s.SetType(v)
+	})
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *LastTryUpsertOne) UpdateType() *LastTryUpsertOne {
+	return u.Update(func(s *LastTryUpsert) {
+		s.UpdateType()
 	})
 }
 
@@ -458,6 +502,20 @@ func (u *LastTryUpsertBulk) SetTry(v time.Time) *LastTryUpsertBulk {
 func (u *LastTryUpsertBulk) UpdateTry() *LastTryUpsertBulk {
 	return u.Update(func(s *LastTryUpsert) {
 		s.UpdateTry()
+	})
+}
+
+// SetType sets the "type" field.
+func (u *LastTryUpsertBulk) SetType(v lasttry.Type) *LastTryUpsertBulk {
+	return u.Update(func(s *LastTryUpsert) {
+		s.SetType(v)
+	})
+}
+
+// UpdateType sets the "type" field to the value that was provided on create.
+func (u *LastTryUpsertBulk) UpdateType() *LastTryUpsertBulk {
+	return u.Update(func(s *LastTryUpsert) {
+		s.UpdateType()
 	})
 }
 
