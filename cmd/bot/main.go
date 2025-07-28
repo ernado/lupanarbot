@@ -139,7 +139,7 @@ func extractUserID(m *tg.Message) (int64, bool) {
 }
 
 func sameDay(t1, t2 time.Time) bool {
-	loc, err := time.LoadLocation("GMT+3")
+	loc, err := time.LoadLocation("Etc/GMT+3")
 	if err != nil {
 		loc = time.UTC // Fallback to UTC if loading fails
 	}
