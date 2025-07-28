@@ -151,6 +151,9 @@ func sameDay(t1, t2 time.Time) bool {
 }
 
 func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Type) (ok bool, rerr error) {
+	lg := zctx.From(ctx).With(
+		zap.Int64("user_id", userID),
+	)
 	now := time.Now()
 
 	defer func() {
@@ -175,23 +178,26 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 		}
 	}()
 
-	// If last try was more than 24 hours ago, allow the user to try again.
 	lastTry, err := a.db.Try.Query().Where(
 		try.UserID(userID),
 		try.TypeEQ(tryType),
 	).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
+			lg.Info("No previous try found, allowing new try")
 			return true, nil
 		}
+		lg.Error("Failed to get last try", zap.Error(err))
 		return false, errors.Wrap(err, "get last try")
 	}
 
-	if !sameDay(lastTry.CreatedAt, now) {
-		return true, nil
+	if sameDay(lastTry.CreatedAt, now) {
+		lg.Info("Already tried today, denying new try")
+		return false, nil
 	}
 
-	return false, nil
+	lg.Info("Last try was on a different day, allowing new try")
+	return true, nil
 }
 
 func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMessage) error {
