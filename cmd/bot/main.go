@@ -148,7 +148,7 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 			SetCreatedAt(now).
 			OnConflict(
 				sql.ConflictConstraint(
-					"tries_pkey",
+					"try_user_id_type",
 				),
 				sql.ResolveWithNewValues(),
 			).
