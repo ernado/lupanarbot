@@ -179,8 +179,10 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 	}()
 
 	lastTry, err := a.db.Try.Query().Where(
-		try.UserID(userID),
-		try.TypeEQ(tryType),
+		try.And(
+			try.UserID(userID),
+			try.TypeEQ(tryType),
+		),
 	).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
