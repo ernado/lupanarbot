@@ -2,8 +2,20 @@
 
 package ent
 
+import (
+	"github.com/ernado/lupanarbot/internal/ent/schema"
+	"github.com/ernado/lupanarbot/internal/ent/try"
+	"github.com/google/uuid"
+)
+
 // The init function reads all schema descriptors with runtime code
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	tryFields := schema.Try{}.Fields()
+	_ = tryFields
+	// tryDescID is the schema descriptor for id field.
+	tryDescID := tryFields[0].Descriptor()
+	// try.DefaultID holds the default value on creation for the id field.
+	try.DefaultID = tryDescID.Default.(func() uuid.UUID)
 }

@@ -28,6 +28,27 @@ func (tu *TryUpdate) Where(ps ...predicate.Try) *TryUpdate {
 	return tu
 }
 
+// SetUserID sets the "user_id" field.
+func (tu *TryUpdate) SetUserID(i int64) *TryUpdate {
+	tu.mutation.ResetUserID()
+	tu.mutation.SetUserID(i)
+	return tu
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (tu *TryUpdate) SetNillableUserID(i *int64) *TryUpdate {
+	if i != nil {
+		tu.SetUserID(*i)
+	}
+	return tu
+}
+
+// AddUserID adds i to the "user_id" field.
+func (tu *TryUpdate) AddUserID(i int64) *TryUpdate {
+	tu.mutation.AddUserID(i)
+	return tu
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (tu *TryUpdate) SetCreatedAt(t time.Time) *TryUpdate {
 	tu.mutation.SetCreatedAt(t)
@@ -102,13 +123,19 @@ func (tu *TryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := tu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(try.Table, try.Columns, sqlgraph.NewFieldSpec(try.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewUpdateSpec(try.Table, try.Columns, sqlgraph.NewFieldSpec(try.FieldID, field.TypeUUID))
 	if ps := tu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := tu.mutation.UserID(); ok {
+		_spec.SetField(try.FieldUserID, field.TypeInt64, value)
+	}
+	if value, ok := tu.mutation.AddedUserID(); ok {
+		_spec.AddField(try.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := tu.mutation.CreatedAt(); ok {
 		_spec.SetField(try.FieldCreatedAt, field.TypeTime, value)
@@ -134,6 +161,27 @@ type TryUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *TryMutation
+}
+
+// SetUserID sets the "user_id" field.
+func (tuo *TryUpdateOne) SetUserID(i int64) *TryUpdateOne {
+	tuo.mutation.ResetUserID()
+	tuo.mutation.SetUserID(i)
+	return tuo
+}
+
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (tuo *TryUpdateOne) SetNillableUserID(i *int64) *TryUpdateOne {
+	if i != nil {
+		tuo.SetUserID(*i)
+	}
+	return tuo
+}
+
+// AddUserID adds i to the "user_id" field.
+func (tuo *TryUpdateOne) AddUserID(i int64) *TryUpdateOne {
+	tuo.mutation.AddUserID(i)
+	return tuo
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -223,7 +271,7 @@ func (tuo *TryUpdateOne) sqlSave(ctx context.Context) (_node *Try, err error) {
 	if err := tuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(try.Table, try.Columns, sqlgraph.NewFieldSpec(try.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewUpdateSpec(try.Table, try.Columns, sqlgraph.NewFieldSpec(try.FieldID, field.TypeUUID))
 	id, ok := tuo.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Try.id" for update`)}
@@ -247,6 +295,12 @@ func (tuo *TryUpdateOne) sqlSave(ctx context.Context) (_node *Try, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := tuo.mutation.UserID(); ok {
+		_spec.SetField(try.FieldUserID, field.TypeInt64, value)
+	}
+	if value, ok := tuo.mutation.AddedUserID(); ok {
+		_spec.AddField(try.FieldUserID, field.TypeInt64, value)
 	}
 	if value, ok := tuo.mutation.CreatedAt(); ok {
 		_spec.SetField(try.FieldCreatedAt, field.TypeTime, value)

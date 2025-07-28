@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 )
 
 const (
@@ -13,6 +14,8 @@ const (
 	Label = "try"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldUserID holds the string denoting the user_id field in the database.
+	FieldUserID = "user_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldType holds the string denoting the type field in the database.
@@ -24,6 +27,7 @@ const (
 // Columns holds all SQL columns for try fields.
 var Columns = []string{
 	FieldID,
+	FieldUserID,
 	FieldCreatedAt,
 	FieldType,
 }
@@ -37,6 +41,11 @@ func ValidColumn(column string) bool {
 	}
 	return false
 }
+
+var (
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() uuid.UUID
+)
 
 // Type defines the type for the "type" enum field.
 type Type string
@@ -68,6 +77,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByUserID orders the results by the user_id field.
+func ByUserID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldUserID, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

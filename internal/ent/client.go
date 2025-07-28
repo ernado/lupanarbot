@@ -10,6 +10,7 @@ import (
 	"reflect"
 
 	"github.com/ernado/lupanarbot/internal/ent/migrate"
+	"github.com/google/uuid"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
@@ -543,7 +544,7 @@ func (c *TryClient) UpdateOne(t *Try) *TryUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *TryClient) UpdateOneID(id int64) *TryUpdateOne {
+func (c *TryClient) UpdateOneID(id uuid.UUID) *TryUpdateOne {
 	mutation := newTryMutation(c.config, OpUpdateOne, withTryID(id))
 	return &TryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -560,7 +561,7 @@ func (c *TryClient) DeleteOne(t *Try) *TryDeleteOne {
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *TryClient) DeleteOneID(id int64) *TryDeleteOne {
+func (c *TryClient) DeleteOneID(id uuid.UUID) *TryDeleteOne {
 	builder := c.Delete().Where(try.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -577,12 +578,12 @@ func (c *TryClient) Query() *TryQuery {
 }
 
 // Get returns a Try entity by its id.
-func (c *TryClient) Get(ctx context.Context, id int64) (*Try, error) {
+func (c *TryClient) Get(ctx context.Context, id uuid.UUID) (*Try, error) {
 	return c.Query().Where(try.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *TryClient) GetX(ctx context.Context, id int64) *Try {
+func (c *TryClient) GetX(ctx context.Context, id uuid.UUID) *Try {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

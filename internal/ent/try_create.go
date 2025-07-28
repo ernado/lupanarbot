@@ -8,10 +8,12 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/ernado/lupanarbot/internal/ent/try"
+	"github.com/google/uuid"
 )
 
 // TryCreate is the builder for creating a Try entity.
@@ -20,6 +22,12 @@ type TryCreate struct {
 	mutation *TryMutation
 	hooks    []Hook
 	conflict []sql.ConflictOption
+}
+
+// SetUserID sets the "user_id" field.
+func (tc *TryCreate) SetUserID(i int64) *TryCreate {
+	tc.mutation.SetUserID(i)
+	return tc
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -35,8 +43,16 @@ func (tc *TryCreate) SetType(t try.Type) *TryCreate {
 }
 
 // SetID sets the "id" field.
-func (tc *TryCreate) SetID(i int64) *TryCreate {
-	tc.mutation.SetID(i)
+func (tc *TryCreate) SetID(u uuid.UUID) *TryCreate {
+	tc.mutation.SetID(u)
+	return tc
+}
+
+// SetNillableID sets the "id" field if the given value is not nil.
+func (tc *TryCreate) SetNillableID(u *uuid.UUID) *TryCreate {
+	if u != nil {
+		tc.SetID(*u)
+	}
 	return tc
 }
 
@@ -47,6 +63,7 @@ func (tc *TryCreate) Mutation() *TryMutation {
 
 // Save creates the Try in the database.
 func (tc *TryCreate) Save(ctx context.Context) (*Try, error) {
+	tc.defaults()
 	return withHooks(ctx, tc.sqlSave, tc.mutation, tc.hooks)
 }
 
@@ -72,8 +89,19 @@ func (tc *TryCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (tc *TryCreate) defaults() {
+	if _, ok := tc.mutation.ID(); !ok {
+		v := try.DefaultID()
+		tc.mutation.SetID(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (tc *TryCreate) check() error {
+	if _, ok := tc.mutation.UserID(); !ok {
+		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Try.user_id"`)}
+	}
 	if _, ok := tc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Try.created_at"`)}
 	}
@@ -99,9 +127,12 @@ func (tc *TryCreate) sqlSave(ctx context.Context) (*Try, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
+	if _spec.ID.Value != nil {
+		if id, ok := _spec.ID.Value.(*uuid.UUID); ok {
+			_node.ID = *id
+		} else if err := _node.ID.Scan(_spec.ID.Value); err != nil {
+			return nil, err
+		}
 	}
 	tc.mutation.id = &_node.ID
 	tc.mutation.done = true
@@ -111,12 +142,16 @@ func (tc *TryCreate) sqlSave(ctx context.Context) (*Try, error) {
 func (tc *TryCreate) createSpec() (*Try, *sqlgraph.CreateSpec) {
 	var (
 		_node = &Try{config: tc.config}
-		_spec = sqlgraph.NewCreateSpec(try.Table, sqlgraph.NewFieldSpec(try.FieldID, field.TypeInt64))
+		_spec = sqlgraph.NewCreateSpec(try.Table, sqlgraph.NewFieldSpec(try.FieldID, field.TypeUUID))
 	)
 	_spec.OnConflict = tc.conflict
 	if id, ok := tc.mutation.ID(); ok {
 		_node.ID = id
-		_spec.ID.Value = id
+		_spec.ID.Value = &id
+	}
+	if value, ok := tc.mutation.UserID(); ok {
+		_spec.SetField(try.FieldUserID, field.TypeInt64, value)
+		_node.UserID = value
 	}
 	if value, ok := tc.mutation.CreatedAt(); ok {
 		_spec.SetField(try.FieldCreatedAt, field.TypeTime, value)
@@ -133,7 +168,7 @@ func (tc *TryCreate) createSpec() (*Try, *sqlgraph.CreateSpec) {
 // of the `INSERT` statement. For example:
 //
 //	client.Try.Create().
-//		SetCreatedAt(v).
+//		SetUserID(v).
 //		OnConflict(
 //			// Update the row with the new values
 //			// the was proposed for insertion.
@@ -142,7 +177,7 @@ func (tc *TryCreate) createSpec() (*Try, *sqlgraph.CreateSpec) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.TryUpsert) {
-//			SetCreatedAt(v+v).
+//			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
 func (tc *TryCreate) OnConflict(opts ...sql.ConflictOption) *TryUpsertOne {
@@ -177,6 +212,24 @@ type (
 		*sql.UpdateSet
 	}
 )
+
+// SetUserID sets the "user_id" field.
+func (u *TryUpsert) SetUserID(v int64) *TryUpsert {
+	u.Set(try.FieldUserID, v)
+	return u
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *TryUpsert) UpdateUserID() *TryUpsert {
+	u.SetExcluded(try.FieldUserID)
+	return u
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *TryUpsert) AddUserID(v int64) *TryUpsert {
+	u.Add(try.FieldUserID, v)
+	return u
+}
 
 // SetCreatedAt sets the "created_at" field.
 func (u *TryUpsert) SetCreatedAt(v time.Time) *TryUpsert {
@@ -250,6 +303,27 @@ func (u *TryUpsertOne) Update(set func(*TryUpsert)) *TryUpsertOne {
 	return u
 }
 
+// SetUserID sets the "user_id" field.
+func (u *TryUpsertOne) SetUserID(v int64) *TryUpsertOne {
+	return u.Update(func(s *TryUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *TryUpsertOne) AddUserID(v int64) *TryUpsertOne {
+	return u.Update(func(s *TryUpsert) {
+		s.AddUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *TryUpsertOne) UpdateUserID() *TryUpsertOne {
+	return u.Update(func(s *TryUpsert) {
+		s.UpdateUserID()
+	})
+}
+
 // SetCreatedAt sets the "created_at" field.
 func (u *TryUpsertOne) SetCreatedAt(v time.Time) *TryUpsertOne {
 	return u.Update(func(s *TryUpsert) {
@@ -294,7 +368,12 @@ func (u *TryUpsertOne) ExecX(ctx context.Context) {
 }
 
 // Exec executes the UPSERT query and returns the inserted/updated ID.
-func (u *TryUpsertOne) ID(ctx context.Context) (id int64, err error) {
+func (u *TryUpsertOne) ID(ctx context.Context) (id uuid.UUID, err error) {
+	if u.create.driver.Dialect() == dialect.MySQL {
+		// In case of "ON CONFLICT", there is no way to get back non-numeric ID
+		// fields from the database since MySQL does not support the RETURNING clause.
+		return id, errors.New("ent: TryUpsertOne.ID is not supported by MySQL driver. Use TryUpsertOne.Exec instead")
+	}
 	node, err := u.create.Save(ctx)
 	if err != nil {
 		return id, err
@@ -303,7 +382,7 @@ func (u *TryUpsertOne) ID(ctx context.Context) (id int64, err error) {
 }
 
 // IDX is like ID, but panics if an error occurs.
-func (u *TryUpsertOne) IDX(ctx context.Context) int64 {
+func (u *TryUpsertOne) IDX(ctx context.Context) uuid.UUID {
 	id, err := u.ID(ctx)
 	if err != nil {
 		panic(err)
@@ -330,6 +409,7 @@ func (tcb *TryCreateBulk) Save(ctx context.Context) ([]*Try, error) {
 	for i := range tcb.builders {
 		func(i int, root context.Context) {
 			builder := tcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TryMutation)
 				if !ok {
@@ -357,10 +437,6 @@ func (tcb *TryCreateBulk) Save(ctx context.Context) ([]*Try, error) {
 					return nil, err
 				}
 				mutation.id = &nodes[i].ID
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
-					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
-				}
 				mutation.done = true
 				return nodes[i], nil
 			})
@@ -412,7 +488,7 @@ func (tcb *TryCreateBulk) ExecX(ctx context.Context) {
 //		// Override some of the fields with custom
 //		// update values.
 //		Update(func(u *ent.TryUpsert) {
-//			SetCreatedAt(v+v).
+//			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
 func (tcb *TryCreateBulk) OnConflict(opts ...sql.ConflictOption) *TryUpsertBulk {
@@ -489,6 +565,27 @@ func (u *TryUpsertBulk) Update(set func(*TryUpsert)) *TryUpsertBulk {
 		set(&TryUpsert{UpdateSet: update})
 	}))
 	return u
+}
+
+// SetUserID sets the "user_id" field.
+func (u *TryUpsertBulk) SetUserID(v int64) *TryUpsertBulk {
+	return u.Update(func(s *TryUpsert) {
+		s.SetUserID(v)
+	})
+}
+
+// AddUserID adds v to the "user_id" field.
+func (u *TryUpsertBulk) AddUserID(v int64) *TryUpsertBulk {
+	return u.Update(func(s *TryUpsert) {
+		s.AddUserID(v)
+	})
+}
+
+// UpdateUserID sets the "user_id" field to the value that was provided on create.
+func (u *TryUpsertBulk) UpdateUserID() *TryUpsertBulk {
+	return u.Update(func(s *TryUpsert) {
+		s.UpdateUserID()
+	})
 }
 
 // SetCreatedAt sets the "created_at" field.

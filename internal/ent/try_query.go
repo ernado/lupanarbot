@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/ernado/lupanarbot/internal/ent/predicate"
 	"github.com/ernado/lupanarbot/internal/ent/try"
+	"github.com/google/uuid"
 )
 
 // TryQuery is the builder for querying Try entities.
@@ -82,8 +83,8 @@ func (tq *TryQuery) FirstX(ctx context.Context) *Try {
 
 // FirstID returns the first Try ID from the query.
 // Returns a *NotFoundError when no Try ID was found.
-func (tq *TryQuery) FirstID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (tq *TryQuery) FirstID(ctx context.Context) (id uuid.UUID, err error) {
+	var ids []uuid.UUID
 	if ids, err = tq.Limit(1).IDs(setContextOp(ctx, tq.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
@@ -95,7 +96,7 @@ func (tq *TryQuery) FirstID(ctx context.Context) (id int64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (tq *TryQuery) FirstIDX(ctx context.Context) int64 {
+func (tq *TryQuery) FirstIDX(ctx context.Context) uuid.UUID {
 	id, err := tq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -133,8 +134,8 @@ func (tq *TryQuery) OnlyX(ctx context.Context) *Try {
 // OnlyID is like Only, but returns the only Try ID in the query.
 // Returns a *NotSingularError when more than one Try ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (tq *TryQuery) OnlyID(ctx context.Context) (id int64, err error) {
-	var ids []int64
+func (tq *TryQuery) OnlyID(ctx context.Context) (id uuid.UUID, err error) {
+	var ids []uuid.UUID
 	if ids, err = tq.Limit(2).IDs(setContextOp(ctx, tq.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
 	}
@@ -150,7 +151,7 @@ func (tq *TryQuery) OnlyID(ctx context.Context) (id int64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (tq *TryQuery) OnlyIDX(ctx context.Context) int64 {
+func (tq *TryQuery) OnlyIDX(ctx context.Context) uuid.UUID {
 	id, err := tq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -178,7 +179,7 @@ func (tq *TryQuery) AllX(ctx context.Context) []*Try {
 }
 
 // IDs executes the query and returns a list of Try IDs.
-func (tq *TryQuery) IDs(ctx context.Context) (ids []int64, err error) {
+func (tq *TryQuery) IDs(ctx context.Context) (ids []uuid.UUID, err error) {
 	if tq.ctx.Unique == nil && tq.path != nil {
 		tq.Unique(true)
 	}
@@ -190,7 +191,7 @@ func (tq *TryQuery) IDs(ctx context.Context) (ids []int64, err error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (tq *TryQuery) IDsX(ctx context.Context) []int64 {
+func (tq *TryQuery) IDsX(ctx context.Context) []uuid.UUID {
 	ids, err := tq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -262,12 +263,12 @@ func (tq *TryQuery) Clone() *TryQuery {
 // Example:
 //
 //	var v []struct {
-//		CreatedAt time.Time `json:"created_at,omitempty"`
+//		UserID int64 `json:"user_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Try.Query().
-//		GroupBy(try.FieldCreatedAt).
+//		GroupBy(try.FieldUserID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (tq *TryQuery) GroupBy(field string, fields ...string) *TryGroupBy {
@@ -285,11 +286,11 @@ func (tq *TryQuery) GroupBy(field string, fields ...string) *TryGroupBy {
 // Example:
 //
 //	var v []struct {
-//		CreatedAt time.Time `json:"created_at,omitempty"`
+//		UserID int64 `json:"user_id,omitempty"`
 //	}
 //
 //	client.Try.Query().
-//		Select(try.FieldCreatedAt).
+//		Select(try.FieldUserID).
 //		Scan(ctx, &v)
 func (tq *TryQuery) Select(fields ...string) *TrySelect {
 	tq.ctx.Fields = append(tq.ctx.Fields, fields...)
@@ -365,7 +366,7 @@ func (tq *TryQuery) sqlCount(ctx context.Context) (int, error) {
 }
 
 func (tq *TryQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(try.Table, try.Columns, sqlgraph.NewFieldSpec(try.FieldID, field.TypeInt64))
+	_spec := sqlgraph.NewQuerySpec(try.Table, try.Columns, sqlgraph.NewFieldSpec(try.FieldID, field.TypeUUID))
 	_spec.From = tq.sql
 	if unique := tq.ctx.Unique; unique != nil {
 		_spec.Unique = *unique

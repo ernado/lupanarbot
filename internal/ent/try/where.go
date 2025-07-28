@@ -7,56 +7,102 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/ernado/lupanarbot/internal/ent/predicate"
+	"github.com/google/uuid"
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int64) predicate.Try {
+func ID(id uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldEQ(FieldID, id))
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int64) predicate.Try {
+func IDEQ(id uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldEQ(FieldID, id))
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int64) predicate.Try {
+func IDNEQ(id uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldNEQ(FieldID, id))
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int64) predicate.Try {
+func IDIn(ids ...uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldIn(FieldID, ids...))
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int64) predicate.Try {
+func IDNotIn(ids ...uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldNotIn(FieldID, ids...))
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int64) predicate.Try {
+func IDGT(id uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldGT(FieldID, id))
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int64) predicate.Try {
+func IDGTE(id uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldGTE(FieldID, id))
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int64) predicate.Try {
+func IDLT(id uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldLT(FieldID, id))
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int64) predicate.Try {
+func IDLTE(id uuid.UUID) predicate.Try {
 	return predicate.Try(sql.FieldLTE(FieldID, id))
+}
+
+// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
+func UserID(v int64) predicate.Try {
+	return predicate.Try(sql.FieldEQ(FieldUserID, v))
 }
 
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Try {
 	return predicate.Try(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// UserIDEQ applies the EQ predicate on the "user_id" field.
+func UserIDEQ(v int64) predicate.Try {
+	return predicate.Try(sql.FieldEQ(FieldUserID, v))
+}
+
+// UserIDNEQ applies the NEQ predicate on the "user_id" field.
+func UserIDNEQ(v int64) predicate.Try {
+	return predicate.Try(sql.FieldNEQ(FieldUserID, v))
+}
+
+// UserIDIn applies the In predicate on the "user_id" field.
+func UserIDIn(vs ...int64) predicate.Try {
+	return predicate.Try(sql.FieldIn(FieldUserID, vs...))
+}
+
+// UserIDNotIn applies the NotIn predicate on the "user_id" field.
+func UserIDNotIn(vs ...int64) predicate.Try {
+	return predicate.Try(sql.FieldNotIn(FieldUserID, vs...))
+}
+
+// UserIDGT applies the GT predicate on the "user_id" field.
+func UserIDGT(v int64) predicate.Try {
+	return predicate.Try(sql.FieldGT(FieldUserID, v))
+}
+
+// UserIDGTE applies the GTE predicate on the "user_id" field.
+func UserIDGTE(v int64) predicate.Try {
+	return predicate.Try(sql.FieldGTE(FieldUserID, v))
+}
+
+// UserIDLT applies the LT predicate on the "user_id" field.
+func UserIDLT(v int64) predicate.Try {
+	return predicate.Try(sql.FieldLT(FieldUserID, v))
+}
+
+// UserIDLTE applies the LTE predicate on the "user_id" field.
+func UserIDLTE(v int64) predicate.Try {
+	return predicate.Try(sql.FieldLTE(FieldUserID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.

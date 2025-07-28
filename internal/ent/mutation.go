@@ -15,6 +15,7 @@ import (
 	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
 	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
 	"github.com/ernado/lupanarbot/internal/ent/try"
+	"github.com/google/uuid"
 )
 
 const (
@@ -844,7 +845,9 @@ type TryMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int64
+	id            *uuid.UUID
+	user_id       *int64
+	adduser_id    *int64
 	created_at    *time.Time
 	_type         *try.Type
 	clearedFields map[string]struct{}
@@ -873,7 +876,7 @@ func newTryMutation(c config, op Op, opts ...tryOption) *TryMutation {
 }
 
 // withTryID sets the ID field of the mutation.
-func withTryID(id int64) tryOption {
+func withTryID(id uuid.UUID) tryOption {
 	return func(m *TryMutation) {
 		var (
 			err   error
@@ -925,13 +928,13 @@ func (m TryMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Try entities.
-func (m *TryMutation) SetID(id int64) {
+func (m *TryMutation) SetID(id uuid.UUID) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *TryMutation) ID() (id int64, exists bool) {
+func (m *TryMutation) ID() (id uuid.UUID, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -942,12 +945,12 @@ func (m *TryMutation) ID() (id int64, exists bool) {
 // That means, if the mutation is applied within a transaction with an isolation level such
 // as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
 // or updated by the mutation.
-func (m *TryMutation) IDs(ctx context.Context) ([]int64, error) {
+func (m *TryMutation) IDs(ctx context.Context) ([]uuid.UUID, error) {
 	switch {
 	case m.op.Is(OpUpdateOne | OpDeleteOne):
 		id, exists := m.ID()
 		if exists {
-			return []int64{id}, nil
+			return []uuid.UUID{id}, nil
 		}
 		fallthrough
 	case m.op.Is(OpUpdate | OpDelete):
@@ -955,6 +958,62 @@ func (m *TryMutation) IDs(ctx context.Context) ([]int64, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetUserID sets the "user_id" field.
+func (m *TryMutation) SetUserID(i int64) {
+	m.user_id = &i
+	m.adduser_id = nil
+}
+
+// UserID returns the value of the "user_id" field in the mutation.
+func (m *TryMutation) UserID() (r int64, exists bool) {
+	v := m.user_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUserID returns the old "user_id" field's value of the Try entity.
+// If the Try object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TryMutation) OldUserID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUserID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUserID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUserID: %w", err)
+	}
+	return oldValue.UserID, nil
+}
+
+// AddUserID adds i to the "user_id" field.
+func (m *TryMutation) AddUserID(i int64) {
+	if m.adduser_id != nil {
+		*m.adduser_id += i
+	} else {
+		m.adduser_id = &i
+	}
+}
+
+// AddedUserID returns the value that was added to the "user_id" field in this mutation.
+func (m *TryMutation) AddedUserID() (r int64, exists bool) {
+	v := m.adduser_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUserID resets all changes to the "user_id" field.
+func (m *TryMutation) ResetUserID() {
+	m.user_id = nil
+	m.adduser_id = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -1063,7 +1122,10 @@ func (m *TryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TryMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
+	if m.user_id != nil {
+		fields = append(fields, try.FieldUserID)
+	}
 	if m.created_at != nil {
 		fields = append(fields, try.FieldCreatedAt)
 	}
@@ -1078,6 +1140,8 @@ func (m *TryMutation) Fields() []string {
 // schema.
 func (m *TryMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case try.FieldUserID:
+		return m.UserID()
 	case try.FieldCreatedAt:
 		return m.CreatedAt()
 	case try.FieldType:
@@ -1091,6 +1155,8 @@ func (m *TryMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *TryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case try.FieldUserID:
+		return m.OldUserID(ctx)
 	case try.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case try.FieldType:
@@ -1104,6 +1170,13 @@ func (m *TryMutation) OldField(ctx context.Context, name string) (ent.Value, err
 // type.
 func (m *TryMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case try.FieldUserID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUserID(v)
+		return nil
 	case try.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -1125,13 +1198,21 @@ func (m *TryMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *TryMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.adduser_id != nil {
+		fields = append(fields, try.FieldUserID)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *TryMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case try.FieldUserID:
+		return m.AddedUserID()
+	}
 	return nil, false
 }
 
@@ -1140,6 +1221,13 @@ func (m *TryMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *TryMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case try.FieldUserID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUserID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Try numeric field %s", name)
 }
@@ -1167,6 +1255,9 @@ func (m *TryMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *TryMutation) ResetField(name string) error {
 	switch name {
+	case try.FieldUserID:
+		m.ResetUserID()
+		return nil
 	case try.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil

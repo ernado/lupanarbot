@@ -143,7 +143,7 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 
 	defer func() {
 		if err := a.db.Try.Create().
-			SetID(userID).
+			SetUserID(userID).
 			SetType(tryType).
 			SetCreatedAt(now).
 			OnConflict(
@@ -162,7 +162,7 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 
 	// If last try was more than 24 hours ago, allow the user to try again.
 	lastTry, err := a.db.Try.Query().Where(
-		try.ID(userID),
+		try.UserID(userID),
 		try.TypeEQ(tryType),
 	).Only(ctx)
 	if err != nil {

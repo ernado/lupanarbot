@@ -34,7 +34,8 @@ var (
 	}
 	// TriesColumns holds the columns for the "tries" table.
 	TriesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "user_id", Type: field.TypeInt64},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"Extremism", "Constitution", "CriminalCode"}},
 	}
@@ -45,9 +46,9 @@ var (
 		PrimaryKey: []*schema.Column{TriesColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "try_id_type",
+				Name:    "try_user_id_type",
 				Unique:  true,
-				Columns: []*schema.Column{TriesColumns[0], TriesColumns[2]},
+				Columns: []*schema.Column{TriesColumns[1], TriesColumns[3]},
 			},
 		},
 	}
