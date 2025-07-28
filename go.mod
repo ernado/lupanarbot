@@ -13,6 +13,7 @@ require (
 	github.com/XSAM/otelsql v0.39.0
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/sdk v0.28.0
+	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.21.0
 	github.com/gotd/td v0.129.0
 	github.com/jackc/pgx/v5 v5.7.5
@@ -65,7 +66,6 @@ require (
 	github.com/go-openapi/inflect v0.21.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gotd/ige v0.2.2 // indirect
 	github.com/gotd/neo v0.1.5 // indirect
 	github.com/grafana/otel-profiling-go v0.5.1 // indirect
