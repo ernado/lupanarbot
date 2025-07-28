@@ -208,7 +208,7 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 	case "/extremism", "/extremism@lupanar_chatbot":
 		if ok, err := a.checkTry(ctx, userID, try.TypeExtremism); err != nil {
 			lg.Error("Failed to check try", zap.Error(err))
-			if _, err := reply.Text(ctx, "Попробуйте позже"); err != nil {
+			if _, err := reply.Text(ctx, "Внутренняя ошибка"); err != nil {
 				return errors.Wrap(err, "send message")
 			}
 			return nil
@@ -227,7 +227,7 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 	case "/article", "/article@lupanar_chatbot":
 		if ok, err := a.checkTry(ctx, userID, try.TypeCriminalCode); err != nil {
 			lg.Error("Failed to check try", zap.Error(err))
-			if _, err := reply.Text(ctx, "Попробуйте позже"); err != nil {
+			if _, err := reply.Text(ctx, "Внутренняя ошибка"); err != nil {
 				return errors.Wrap(err, "send message")
 			}
 			return nil
@@ -252,7 +252,7 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 	case "/constitution", "/constitution@lupanar_chatbot":
 		if ok, err := a.checkTry(ctx, userID, try.TypeConstitution); err != nil {
 			lg.Error("Failed to check try", zap.Error(err))
-			if _, err := reply.Text(ctx, "Попробуйте позже"); err != nil {
+			if _, err := reply.Text(ctx, "Внутренняя ошибка"); err != nil {
 				return errors.Wrap(err, "send message")
 			}
 			return nil
