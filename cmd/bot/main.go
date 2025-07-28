@@ -157,7 +157,7 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 	).Only(ctx)
 	if err != nil {
 		if ent.IsNotFound(err) {
-			return nil // No previous try, allow the user to try again.
+			return false, nil // No previous try, allow the user to try again.
 		}
 		return false, errors.Wrap(err, "get last try")
 	}
