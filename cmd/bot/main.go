@@ -143,7 +143,10 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 			SetType(tryType).
 			SetCreatedAt(now).
 			OnConflict(
-				sql.ConflictConstraint("try_id_type"),
+				sql.ConflictColumns(
+					try.FieldID,
+					try.FieldType,
+				),
 				sql.ResolveWithNewValues(),
 			).
 			Update(func(upsert *ent.TryUpsert) {
