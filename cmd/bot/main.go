@@ -133,11 +133,10 @@ func extractUserID(m *tg.Message) (int64, bool) {
 	return 0, false
 }
 
-func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Type) (rerr error) {
+func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Type) (ok bool, rerr error) {
 	now := time.Now()
 
 	defer func() {
-		// Upsert the try record, regardless of whether it exists or not.
 		if err := a.db.Try.Create().
 			SetID(userID).
 			SetType(tryType).
@@ -160,15 +159,15 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 		if ent.IsNotFound(err) {
 			return nil // No previous try, allow the user to try again.
 		}
-		return errors.Wrap(err, "get last try")
+		return false, errors.Wrap(err, "get last try")
 	}
 
 	deadline := now.AddDate(0, 0, -1) // 24 hours ago
 	if lastTry.CreatedAt.Before(deadline) {
-		return nil // Last try was more than 24 hours ago, allow the user to try again.
+		return true, nil
 	}
 
-	return errors.New("Попробуйте позже")
+	return false, nil
 }
 
 func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.UpdateNewMessage) error {
@@ -207,12 +206,38 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 			return errors.Wrap(err, "send message")
 		}
 	case "/extremism", "/extremism@lupanar_chatbot":
+		if ok, err := a.checkTry(ctx, userID, try.TypeExtremism); err != nil {
+			lg.Error("Failed to check try", zap.Error(err))
+			if _, err := reply.Text(ctx, "Попробуйте позже"); err != nil {
+				return errors.Wrap(err, "send message")
+			}
+			return nil
+		} else if !ok {
+			if _, err := reply.Text(ctx, "Вы уже пробовали сегодня"); err != nil {
+				return errors.Wrap(err, "send message")
+			}
+			return nil
+		}
+
 		elem := minust.Random()
 		text := fmt.Sprintf("%d. %s", elem.ID, elem.Title)
 		if _, err := reply.Text(ctx, text); err != nil {
 			return errors.Wrap(err, "send message")
 		}
 	case "/article", "/article@lupanar_chatbot":
+		if ok, err := a.checkTry(ctx, userID, try.TypeCriminalCode); err != nil {
+			lg.Error("Failed to check try", zap.Error(err))
+			if _, err := reply.Text(ctx, "Попробуйте позже"); err != nil {
+				return errors.Wrap(err, "send message")
+			}
+			return nil
+		} else if !ok {
+			if _, err := reply.Text(ctx, "Вы уже пробовали сегодня"); err != nil {
+				return errors.Wrap(err, "send message")
+			}
+			return nil
+		}
+
 		article, err := laws.RandomArticle()
 		if err != nil {
 			lg.Error("Failed to get random article", zap.Error(err))
@@ -225,6 +250,19 @@ func (a *Application) onNewMessage(ctx context.Context, e tg.Entities, u *tg.Upd
 			return errors.Wrap(err, "send message")
 		}
 	case "/constitution", "/constitution@lupanar_chatbot":
+		if ok, err := a.checkTry(ctx, userID, try.TypeConstitution); err != nil {
+			lg.Error("Failed to check try", zap.Error(err))
+			if _, err := reply.Text(ctx, "Попробуйте позже"); err != nil {
+				return errors.Wrap(err, "send message")
+			}
+			return nil
+		} else if !ok {
+			if _, err := reply.Text(ctx, "Вы уже пробовали сегодня"); err != nil {
+				return errors.Wrap(err, "send message")
+			}
+			return nil
+		}
+
 		article, err := laws.RandomConstitutionArticle()
 		if err != nil {
 			lg.Error("Failed to get random constitution article", zap.Error(err))
