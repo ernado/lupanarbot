@@ -70,6 +70,10 @@ func (a *Application) Run(ctx context.Context) error {
 						Command:     "article",
 						Description: "Какая статья ты сегодня?",
 					},
+					{
+						Command:     "constitution",
+						Description: "Какая статья Конституции тебе сегодня попалась?",
+					},
 				},
 			}); err != nil {
 				return errors.Wrap(err, "set commands")
