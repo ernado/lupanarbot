@@ -153,7 +153,9 @@ func (a *Application) checkTry(ctx context.Context, userID int64, tryType try.Ty
 				sql.ResolveWithNewValues(),
 			).
 			Update(func(upsert *ent.TryUpsert) {
-				upsert.SetCreatedAt(now)
+				if ok {
+					upsert.SetCreatedAt(now)
+				}
 			}).
 			Exec(ctx); err != nil {
 			rerr = multierr.Append(rerr, errors.Wrap(err, "upsert last try"))
