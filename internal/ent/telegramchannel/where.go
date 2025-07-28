@@ -62,16 +62,6 @@ func Title(v string) predicate.TelegramChannel {
 	return predicate.TelegramChannel(sql.FieldEQ(FieldTitle, v))
 }
 
-// SaveRecords applies equality check predicate on the "save_records" field. It's identical to SaveRecordsEQ.
-func SaveRecords(v bool) predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldEQ(FieldSaveRecords, v))
-}
-
-// SaveFavoriteRecords applies equality check predicate on the "save_favorite_records" field. It's identical to SaveFavoriteRecordsEQ.
-func SaveFavoriteRecords(v bool) predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldEQ(FieldSaveFavoriteRecords, v))
-}
-
 // Active applies equality check predicate on the "active" field. It's identical to ActiveEQ.
 func Active(v bool) predicate.TelegramChannel {
 	return predicate.TelegramChannel(sql.FieldEQ(FieldActive, v))
@@ -180,46 +170,6 @@ func TitleEqualFold(v string) predicate.TelegramChannel {
 // TitleContainsFold applies the ContainsFold predicate on the "title" field.
 func TitleContainsFold(v string) predicate.TelegramChannel {
 	return predicate.TelegramChannel(sql.FieldContainsFold(FieldTitle, v))
-}
-
-// SaveRecordsEQ applies the EQ predicate on the "save_records" field.
-func SaveRecordsEQ(v bool) predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldEQ(FieldSaveRecords, v))
-}
-
-// SaveRecordsNEQ applies the NEQ predicate on the "save_records" field.
-func SaveRecordsNEQ(v bool) predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldNEQ(FieldSaveRecords, v))
-}
-
-// SaveRecordsIsNil applies the IsNil predicate on the "save_records" field.
-func SaveRecordsIsNil() predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldIsNull(FieldSaveRecords))
-}
-
-// SaveRecordsNotNil applies the NotNil predicate on the "save_records" field.
-func SaveRecordsNotNil() predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldNotNull(FieldSaveRecords))
-}
-
-// SaveFavoriteRecordsEQ applies the EQ predicate on the "save_favorite_records" field.
-func SaveFavoriteRecordsEQ(v bool) predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldEQ(FieldSaveFavoriteRecords, v))
-}
-
-// SaveFavoriteRecordsNEQ applies the NEQ predicate on the "save_favorite_records" field.
-func SaveFavoriteRecordsNEQ(v bool) predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldNEQ(FieldSaveFavoriteRecords, v))
-}
-
-// SaveFavoriteRecordsIsNil applies the IsNil predicate on the "save_favorite_records" field.
-func SaveFavoriteRecordsIsNil() predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldIsNull(FieldSaveFavoriteRecords))
-}
-
-// SaveFavoriteRecordsNotNil applies the NotNil predicate on the "save_favorite_records" field.
-func SaveFavoriteRecordsNotNil() predicate.TelegramChannel {
-	return predicate.TelegramChannel(sql.FieldNotNull(FieldSaveFavoriteRecords))
 }
 
 // ActiveEQ applies the EQ predicate on the "active" field.

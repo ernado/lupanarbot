@@ -8,13 +8,22 @@ import (
 )
 
 var (
+	// LastTriesColumns holds the columns for the "last_tries" table.
+	LastTriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "try", Type: field.TypeTime},
+	}
+	// LastTriesTable holds the schema information for the "last_tries" table.
+	LastTriesTable = &schema.Table{
+		Name:       "last_tries",
+		Columns:    LastTriesColumns,
+		PrimaryKey: []*schema.Column{LastTriesColumns[0]},
+	}
 	// TelegramChannelsColumns holds the columns for the "telegram_channels" table.
 	TelegramChannelsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true},
 		{Name: "access_hash", Type: field.TypeInt64},
 		{Name: "title", Type: field.TypeString},
-		{Name: "save_records", Type: field.TypeBool, Nullable: true},
-		{Name: "save_favorite_records", Type: field.TypeBool, Nullable: true},
 		{Name: "active", Type: field.TypeBool},
 	}
 	// TelegramChannelsTable holds the schema information for the "telegram_channels" table.
@@ -36,6 +45,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		LastTriesTable,
 		TelegramChannelsTable,
 		TelegramSessionsTable,
 	}

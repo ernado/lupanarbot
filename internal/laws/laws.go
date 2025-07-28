@@ -8,8 +8,13 @@ import (
 	"math/big"
 )
 
-//go:embed articles.json
-var articlesJSON []byte
+var (
+	//go:embed articles.json
+	articlesJSON []byte
+
+	//go:embed constitution.json
+	constitutionJSON []byte
+)
 
 func init() {
 	// Initialize the law collection from embedded JSON data
@@ -25,6 +30,15 @@ func RandomArticle() (*Article, error) {
 	lawCollection, err := NewLawCollection(articlesJSON)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create law collection: %w", err)
+	}
+	return lawCollection.GetRandomArticle()
+}
+
+func RandomConstitutionArticle() (*Article, error) {
+	// Get a random article from the constitution
+	lawCollection, err := NewLawCollection(constitutionJSON)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create constitution collection: %w", err)
 	}
 	return lawCollection.GetRandomArticle()
 }

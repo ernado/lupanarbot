@@ -33,34 +33,6 @@ func (tcc *TelegramChannelCreate) SetTitle(s string) *TelegramChannelCreate {
 	return tcc
 }
 
-// SetSaveRecords sets the "save_records" field.
-func (tcc *TelegramChannelCreate) SetSaveRecords(b bool) *TelegramChannelCreate {
-	tcc.mutation.SetSaveRecords(b)
-	return tcc
-}
-
-// SetNillableSaveRecords sets the "save_records" field if the given value is not nil.
-func (tcc *TelegramChannelCreate) SetNillableSaveRecords(b *bool) *TelegramChannelCreate {
-	if b != nil {
-		tcc.SetSaveRecords(*b)
-	}
-	return tcc
-}
-
-// SetSaveFavoriteRecords sets the "save_favorite_records" field.
-func (tcc *TelegramChannelCreate) SetSaveFavoriteRecords(b bool) *TelegramChannelCreate {
-	tcc.mutation.SetSaveFavoriteRecords(b)
-	return tcc
-}
-
-// SetNillableSaveFavoriteRecords sets the "save_favorite_records" field if the given value is not nil.
-func (tcc *TelegramChannelCreate) SetNillableSaveFavoriteRecords(b *bool) *TelegramChannelCreate {
-	if b != nil {
-		tcc.SetSaveFavoriteRecords(*b)
-	}
-	return tcc
-}
-
 // SetActive sets the "active" field.
 func (tcc *TelegramChannelCreate) SetActive(b bool) *TelegramChannelCreate {
 	tcc.mutation.SetActive(b)
@@ -157,14 +129,6 @@ func (tcc *TelegramChannelCreate) createSpec() (*TelegramChannel, *sqlgraph.Crea
 		_spec.SetField(telegramchannel.FieldTitle, field.TypeString, value)
 		_node.Title = value
 	}
-	if value, ok := tcc.mutation.SaveRecords(); ok {
-		_spec.SetField(telegramchannel.FieldSaveRecords, field.TypeBool, value)
-		_node.SaveRecords = value
-	}
-	if value, ok := tcc.mutation.SaveFavoriteRecords(); ok {
-		_spec.SetField(telegramchannel.FieldSaveFavoriteRecords, field.TypeBool, value)
-		_node.SaveFavoriteRecords = value
-	}
 	if value, ok := tcc.mutation.Active(); ok {
 		_spec.SetField(telegramchannel.FieldActive, field.TypeBool, value)
 		_node.Active = value
@@ -248,42 +212,6 @@ func (u *TelegramChannelUpsert) SetTitle(v string) *TelegramChannelUpsert {
 // UpdateTitle sets the "title" field to the value that was provided on create.
 func (u *TelegramChannelUpsert) UpdateTitle() *TelegramChannelUpsert {
 	u.SetExcluded(telegramchannel.FieldTitle)
-	return u
-}
-
-// SetSaveRecords sets the "save_records" field.
-func (u *TelegramChannelUpsert) SetSaveRecords(v bool) *TelegramChannelUpsert {
-	u.Set(telegramchannel.FieldSaveRecords, v)
-	return u
-}
-
-// UpdateSaveRecords sets the "save_records" field to the value that was provided on create.
-func (u *TelegramChannelUpsert) UpdateSaveRecords() *TelegramChannelUpsert {
-	u.SetExcluded(telegramchannel.FieldSaveRecords)
-	return u
-}
-
-// ClearSaveRecords clears the value of the "save_records" field.
-func (u *TelegramChannelUpsert) ClearSaveRecords() *TelegramChannelUpsert {
-	u.SetNull(telegramchannel.FieldSaveRecords)
-	return u
-}
-
-// SetSaveFavoriteRecords sets the "save_favorite_records" field.
-func (u *TelegramChannelUpsert) SetSaveFavoriteRecords(v bool) *TelegramChannelUpsert {
-	u.Set(telegramchannel.FieldSaveFavoriteRecords, v)
-	return u
-}
-
-// UpdateSaveFavoriteRecords sets the "save_favorite_records" field to the value that was provided on create.
-func (u *TelegramChannelUpsert) UpdateSaveFavoriteRecords() *TelegramChannelUpsert {
-	u.SetExcluded(telegramchannel.FieldSaveFavoriteRecords)
-	return u
-}
-
-// ClearSaveFavoriteRecords clears the value of the "save_favorite_records" field.
-func (u *TelegramChannelUpsert) ClearSaveFavoriteRecords() *TelegramChannelUpsert {
-	u.SetNull(telegramchannel.FieldSaveFavoriteRecords)
 	return u
 }
 
@@ -379,48 +307,6 @@ func (u *TelegramChannelUpsertOne) SetTitle(v string) *TelegramChannelUpsertOne 
 func (u *TelegramChannelUpsertOne) UpdateTitle() *TelegramChannelUpsertOne {
 	return u.Update(func(s *TelegramChannelUpsert) {
 		s.UpdateTitle()
-	})
-}
-
-// SetSaveRecords sets the "save_records" field.
-func (u *TelegramChannelUpsertOne) SetSaveRecords(v bool) *TelegramChannelUpsertOne {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.SetSaveRecords(v)
-	})
-}
-
-// UpdateSaveRecords sets the "save_records" field to the value that was provided on create.
-func (u *TelegramChannelUpsertOne) UpdateSaveRecords() *TelegramChannelUpsertOne {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.UpdateSaveRecords()
-	})
-}
-
-// ClearSaveRecords clears the value of the "save_records" field.
-func (u *TelegramChannelUpsertOne) ClearSaveRecords() *TelegramChannelUpsertOne {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.ClearSaveRecords()
-	})
-}
-
-// SetSaveFavoriteRecords sets the "save_favorite_records" field.
-func (u *TelegramChannelUpsertOne) SetSaveFavoriteRecords(v bool) *TelegramChannelUpsertOne {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.SetSaveFavoriteRecords(v)
-	})
-}
-
-// UpdateSaveFavoriteRecords sets the "save_favorite_records" field to the value that was provided on create.
-func (u *TelegramChannelUpsertOne) UpdateSaveFavoriteRecords() *TelegramChannelUpsertOne {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.UpdateSaveFavoriteRecords()
-	})
-}
-
-// ClearSaveFavoriteRecords clears the value of the "save_favorite_records" field.
-func (u *TelegramChannelUpsertOne) ClearSaveFavoriteRecords() *TelegramChannelUpsertOne {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.ClearSaveFavoriteRecords()
 	})
 }
 
@@ -683,48 +569,6 @@ func (u *TelegramChannelUpsertBulk) SetTitle(v string) *TelegramChannelUpsertBul
 func (u *TelegramChannelUpsertBulk) UpdateTitle() *TelegramChannelUpsertBulk {
 	return u.Update(func(s *TelegramChannelUpsert) {
 		s.UpdateTitle()
-	})
-}
-
-// SetSaveRecords sets the "save_records" field.
-func (u *TelegramChannelUpsertBulk) SetSaveRecords(v bool) *TelegramChannelUpsertBulk {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.SetSaveRecords(v)
-	})
-}
-
-// UpdateSaveRecords sets the "save_records" field to the value that was provided on create.
-func (u *TelegramChannelUpsertBulk) UpdateSaveRecords() *TelegramChannelUpsertBulk {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.UpdateSaveRecords()
-	})
-}
-
-// ClearSaveRecords clears the value of the "save_records" field.
-func (u *TelegramChannelUpsertBulk) ClearSaveRecords() *TelegramChannelUpsertBulk {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.ClearSaveRecords()
-	})
-}
-
-// SetSaveFavoriteRecords sets the "save_favorite_records" field.
-func (u *TelegramChannelUpsertBulk) SetSaveFavoriteRecords(v bool) *TelegramChannelUpsertBulk {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.SetSaveFavoriteRecords(v)
-	})
-}
-
-// UpdateSaveFavoriteRecords sets the "save_favorite_records" field to the value that was provided on create.
-func (u *TelegramChannelUpsertBulk) UpdateSaveFavoriteRecords() *TelegramChannelUpsertBulk {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.UpdateSaveFavoriteRecords()
-	})
-}
-
-// ClearSaveFavoriteRecords clears the value of the "save_favorite_records" field.
-func (u *TelegramChannelUpsertBulk) ClearSaveFavoriteRecords() *TelegramChannelUpsertBulk {
-	return u.Update(func(s *TelegramChannelUpsert) {
-		s.ClearSaveFavoriteRecords()
 	})
 }
 

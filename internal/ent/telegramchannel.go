@@ -20,10 +20,6 @@ type TelegramChannel struct {
 	AccessHash int64 `json:"access_hash,omitempty"`
 	// Title holds the value of the "title" field.
 	Title string `json:"title,omitempty"`
-	// SaveRecords holds the value of the "save_records" field.
-	SaveRecords bool `json:"save_records,omitempty"`
-	// SaveFavoriteRecords holds the value of the "save_favorite_records" field.
-	SaveFavoriteRecords bool `json:"save_favorite_records,omitempty"`
 	// Active holds the value of the "active" field.
 	Active       bool `json:"active,omitempty"`
 	selectValues sql.SelectValues
@@ -34,7 +30,7 @@ func (*TelegramChannel) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case telegramchannel.FieldSaveRecords, telegramchannel.FieldSaveFavoriteRecords, telegramchannel.FieldActive:
+		case telegramchannel.FieldActive:
 			values[i] = new(sql.NullBool)
 		case telegramchannel.FieldID, telegramchannel.FieldAccessHash:
 			values[i] = new(sql.NullInt64)
@@ -72,18 +68,6 @@ func (tc *TelegramChannel) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
 				tc.Title = value.String
-			}
-		case telegramchannel.FieldSaveRecords:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field save_records", values[i])
-			} else if value.Valid {
-				tc.SaveRecords = value.Bool
-			}
-		case telegramchannel.FieldSaveFavoriteRecords:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field save_favorite_records", values[i])
-			} else if value.Valid {
-				tc.SaveFavoriteRecords = value.Bool
 			}
 		case telegramchannel.FieldActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -132,12 +116,6 @@ func (tc *TelegramChannel) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("title=")
 	builder.WriteString(tc.Title)
-	builder.WriteString(", ")
-	builder.WriteString("save_records=")
-	builder.WriteString(fmt.Sprintf("%v", tc.SaveRecords))
-	builder.WriteString(", ")
-	builder.WriteString("save_favorite_records=")
-	builder.WriteString(fmt.Sprintf("%v", tc.SaveFavoriteRecords))
 	builder.WriteString(", ")
 	builder.WriteString("active=")
 	builder.WriteString(fmt.Sprintf("%v", tc.Active))

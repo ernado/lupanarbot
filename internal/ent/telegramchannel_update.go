@@ -62,46 +62,6 @@ func (tcu *TelegramChannelUpdate) SetNillableTitle(s *string) *TelegramChannelUp
 	return tcu
 }
 
-// SetSaveRecords sets the "save_records" field.
-func (tcu *TelegramChannelUpdate) SetSaveRecords(b bool) *TelegramChannelUpdate {
-	tcu.mutation.SetSaveRecords(b)
-	return tcu
-}
-
-// SetNillableSaveRecords sets the "save_records" field if the given value is not nil.
-func (tcu *TelegramChannelUpdate) SetNillableSaveRecords(b *bool) *TelegramChannelUpdate {
-	if b != nil {
-		tcu.SetSaveRecords(*b)
-	}
-	return tcu
-}
-
-// ClearSaveRecords clears the value of the "save_records" field.
-func (tcu *TelegramChannelUpdate) ClearSaveRecords() *TelegramChannelUpdate {
-	tcu.mutation.ClearSaveRecords()
-	return tcu
-}
-
-// SetSaveFavoriteRecords sets the "save_favorite_records" field.
-func (tcu *TelegramChannelUpdate) SetSaveFavoriteRecords(b bool) *TelegramChannelUpdate {
-	tcu.mutation.SetSaveFavoriteRecords(b)
-	return tcu
-}
-
-// SetNillableSaveFavoriteRecords sets the "save_favorite_records" field if the given value is not nil.
-func (tcu *TelegramChannelUpdate) SetNillableSaveFavoriteRecords(b *bool) *TelegramChannelUpdate {
-	if b != nil {
-		tcu.SetSaveFavoriteRecords(*b)
-	}
-	return tcu
-}
-
-// ClearSaveFavoriteRecords clears the value of the "save_favorite_records" field.
-func (tcu *TelegramChannelUpdate) ClearSaveFavoriteRecords() *TelegramChannelUpdate {
-	tcu.mutation.ClearSaveFavoriteRecords()
-	return tcu
-}
-
 // SetActive sets the "active" field.
 func (tcu *TelegramChannelUpdate) SetActive(b bool) *TelegramChannelUpdate {
 	tcu.mutation.SetActive(b)
@@ -166,18 +126,6 @@ func (tcu *TelegramChannelUpdate) sqlSave(ctx context.Context) (n int, err error
 	if value, ok := tcu.mutation.Title(); ok {
 		_spec.SetField(telegramchannel.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := tcu.mutation.SaveRecords(); ok {
-		_spec.SetField(telegramchannel.FieldSaveRecords, field.TypeBool, value)
-	}
-	if tcu.mutation.SaveRecordsCleared() {
-		_spec.ClearField(telegramchannel.FieldSaveRecords, field.TypeBool)
-	}
-	if value, ok := tcu.mutation.SaveFavoriteRecords(); ok {
-		_spec.SetField(telegramchannel.FieldSaveFavoriteRecords, field.TypeBool, value)
-	}
-	if tcu.mutation.SaveFavoriteRecordsCleared() {
-		_spec.ClearField(telegramchannel.FieldSaveFavoriteRecords, field.TypeBool)
-	}
 	if value, ok := tcu.mutation.Active(); ok {
 		_spec.SetField(telegramchannel.FieldActive, field.TypeBool, value)
 	}
@@ -233,46 +181,6 @@ func (tcuo *TelegramChannelUpdateOne) SetNillableTitle(s *string) *TelegramChann
 	if s != nil {
 		tcuo.SetTitle(*s)
 	}
-	return tcuo
-}
-
-// SetSaveRecords sets the "save_records" field.
-func (tcuo *TelegramChannelUpdateOne) SetSaveRecords(b bool) *TelegramChannelUpdateOne {
-	tcuo.mutation.SetSaveRecords(b)
-	return tcuo
-}
-
-// SetNillableSaveRecords sets the "save_records" field if the given value is not nil.
-func (tcuo *TelegramChannelUpdateOne) SetNillableSaveRecords(b *bool) *TelegramChannelUpdateOne {
-	if b != nil {
-		tcuo.SetSaveRecords(*b)
-	}
-	return tcuo
-}
-
-// ClearSaveRecords clears the value of the "save_records" field.
-func (tcuo *TelegramChannelUpdateOne) ClearSaveRecords() *TelegramChannelUpdateOne {
-	tcuo.mutation.ClearSaveRecords()
-	return tcuo
-}
-
-// SetSaveFavoriteRecords sets the "save_favorite_records" field.
-func (tcuo *TelegramChannelUpdateOne) SetSaveFavoriteRecords(b bool) *TelegramChannelUpdateOne {
-	tcuo.mutation.SetSaveFavoriteRecords(b)
-	return tcuo
-}
-
-// SetNillableSaveFavoriteRecords sets the "save_favorite_records" field if the given value is not nil.
-func (tcuo *TelegramChannelUpdateOne) SetNillableSaveFavoriteRecords(b *bool) *TelegramChannelUpdateOne {
-	if b != nil {
-		tcuo.SetSaveFavoriteRecords(*b)
-	}
-	return tcuo
-}
-
-// ClearSaveFavoriteRecords clears the value of the "save_favorite_records" field.
-func (tcuo *TelegramChannelUpdateOne) ClearSaveFavoriteRecords() *TelegramChannelUpdateOne {
-	tcuo.mutation.ClearSaveFavoriteRecords()
 	return tcuo
 }
 
@@ -369,18 +277,6 @@ func (tcuo *TelegramChannelUpdateOne) sqlSave(ctx context.Context) (_node *Teleg
 	}
 	if value, ok := tcuo.mutation.Title(); ok {
 		_spec.SetField(telegramchannel.FieldTitle, field.TypeString, value)
-	}
-	if value, ok := tcuo.mutation.SaveRecords(); ok {
-		_spec.SetField(telegramchannel.FieldSaveRecords, field.TypeBool, value)
-	}
-	if tcuo.mutation.SaveRecordsCleared() {
-		_spec.ClearField(telegramchannel.FieldSaveRecords, field.TypeBool)
-	}
-	if value, ok := tcuo.mutation.SaveFavoriteRecords(); ok {
-		_spec.SetField(telegramchannel.FieldSaveFavoriteRecords, field.TypeBool, value)
-	}
-	if tcuo.mutation.SaveFavoriteRecordsCleared() {
-		_spec.ClearField(telegramchannel.FieldSaveFavoriteRecords, field.TypeBool)
 	}
 	if value, ok := tcuo.mutation.Active(); ok {
 		_spec.SetField(telegramchannel.FieldActive, field.TypeBool, value)

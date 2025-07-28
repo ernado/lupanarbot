@@ -15,8 +15,6 @@ func (TelegramChannel) Fields() []ent.Field {
 		field.Int64("id"),
 		field.Int64("access_hash"),
 		field.String("title"),
-		field.Bool("save_records").Optional(),
-		field.Bool("save_favorite_records").Optional(),
 		field.Bool("active"),
 	}
 }

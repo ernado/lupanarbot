@@ -7,9 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/ernado/lupanarbot/internal/ent/lasttry"
 	"github.com/ernado/lupanarbot/internal/ent/predicate"
 	"github.com/ernado/lupanarbot/internal/ent/telegramchannel"
 	"github.com/ernado/lupanarbot/internal/ent/telegramsession"
@@ -24,26 +26,357 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
+	TypeLastTry         = "LastTry"
 	TypeTelegramChannel = "TelegramChannel"
 	TypeTelegramSession = "TelegramSession"
 )
 
+// LastTryMutation represents an operation that mutates the LastTry nodes in the graph.
+type LastTryMutation struct {
+	config
+	op            Op
+	typ           string
+	id            *int64
+	try           *time.Time
+	clearedFields map[string]struct{}
+	done          bool
+	oldValue      func(context.Context) (*LastTry, error)
+	predicates    []predicate.LastTry
+}
+
+var _ ent.Mutation = (*LastTryMutation)(nil)
+
+// lasttryOption allows management of the mutation configuration using functional options.
+type lasttryOption func(*LastTryMutation)
+
+// newLastTryMutation creates new mutation for the LastTry entity.
+func newLastTryMutation(c config, op Op, opts ...lasttryOption) *LastTryMutation {
+	m := &LastTryMutation{
+		config:        c,
+		op:            op,
+		typ:           TypeLastTry,
+		clearedFields: make(map[string]struct{}),
+	}
+	for _, opt := range opts {
+		opt(m)
+	}
+	return m
+}
+
+// withLastTryID sets the ID field of the mutation.
+func withLastTryID(id int64) lasttryOption {
+	return func(m *LastTryMutation) {
+		var (
+			err   error
+			once  sync.Once
+			value *LastTry
+		)
+		m.oldValue = func(ctx context.Context) (*LastTry, error) {
+			once.Do(func() {
+				if m.done {
+					err = errors.New("querying old values post mutation is not allowed")
+				} else {
+					value, err = m.Client().LastTry.Get(ctx, id)
+				}
+			})
+			return value, err
+		}
+		m.id = &id
+	}
+}
+
+// withLastTry sets the old LastTry of the mutation.
+func withLastTry(node *LastTry) lasttryOption {
+	return func(m *LastTryMutation) {
+		m.oldValue = func(context.Context) (*LastTry, error) {
+			return node, nil
+		}
+		m.id = &node.ID
+	}
+}
+
+// Client returns a new `ent.Client` from the mutation. If the mutation was
+// executed in a transaction (ent.Tx), a transactional client is returned.
+func (m LastTryMutation) Client() *Client {
+	client := &Client{config: m.config}
+	client.init()
+	return client
+}
+
+// Tx returns an `ent.Tx` for mutations that were executed in transactions;
+// it returns an error otherwise.
+func (m LastTryMutation) Tx() (*Tx, error) {
+	if _, ok := m.driver.(*txDriver); !ok {
+		return nil, errors.New("ent: mutation is not running in a transaction")
+	}
+	tx := &Tx{config: m.config}
+	tx.init()
+	return tx, nil
+}
+
+// SetID sets the value of the id field. Note that this
+// operation is only accepted on creation of LastTry entities.
+func (m *LastTryMutation) SetID(id int64) {
+	m.id = &id
+}
+
+// ID returns the ID value in the mutation. Note that the ID is only available
+// if it was provided to the builder or after it was returned from the database.
+func (m *LastTryMutation) ID() (id int64, exists bool) {
+	if m.id == nil {
+		return
+	}
+	return *m.id, true
+}
+
+// IDs queries the database and returns the entity ids that match the mutation's predicate.
+// That means, if the mutation is applied within a transaction with an isolation level such
+// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
+// or updated by the mutation.
+func (m *LastTryMutation) IDs(ctx context.Context) ([]int64, error) {
+	switch {
+	case m.op.Is(OpUpdateOne | OpDeleteOne):
+		id, exists := m.ID()
+		if exists {
+			return []int64{id}, nil
+		}
+		fallthrough
+	case m.op.Is(OpUpdate | OpDelete):
+		return m.Client().LastTry.Query().Where(m.predicates...).IDs(ctx)
+	default:
+		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
+	}
+}
+
+// SetTry sets the "try" field.
+func (m *LastTryMutation) SetTry(t time.Time) {
+	m.try = &t
+}
+
+// Try returns the value of the "try" field in the mutation.
+func (m *LastTryMutation) Try() (r time.Time, exists bool) {
+	v := m.try
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTry returns the old "try" field's value of the LastTry entity.
+// If the LastTry object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *LastTryMutation) OldTry(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTry is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTry requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTry: %w", err)
+	}
+	return oldValue.Try, nil
+}
+
+// ResetTry resets all changes to the "try" field.
+func (m *LastTryMutation) ResetTry() {
+	m.try = nil
+}
+
+// Where appends a list predicates to the LastTryMutation builder.
+func (m *LastTryMutation) Where(ps ...predicate.LastTry) {
+	m.predicates = append(m.predicates, ps...)
+}
+
+// WhereP appends storage-level predicates to the LastTryMutation builder. Using this method,
+// users can use type-assertion to append predicates that do not depend on any generated package.
+func (m *LastTryMutation) WhereP(ps ...func(*sql.Selector)) {
+	p := make([]predicate.LastTry, len(ps))
+	for i := range ps {
+		p[i] = ps[i]
+	}
+	m.Where(p...)
+}
+
+// Op returns the operation name.
+func (m *LastTryMutation) Op() Op {
+	return m.op
+}
+
+// SetOp allows setting the mutation operation.
+func (m *LastTryMutation) SetOp(op Op) {
+	m.op = op
+}
+
+// Type returns the node type of this mutation (LastTry).
+func (m *LastTryMutation) Type() string {
+	return m.typ
+}
+
+// Fields returns all fields that were changed during this mutation. Note that in
+// order to get all numeric fields that were incremented/decremented, call
+// AddedFields().
+func (m *LastTryMutation) Fields() []string {
+	fields := make([]string, 0, 1)
+	if m.try != nil {
+		fields = append(fields, lasttry.FieldTry)
+	}
+	return fields
+}
+
+// Field returns the value of a field with the given name. The second boolean
+// return value indicates that this field was not set, or was not defined in the
+// schema.
+func (m *LastTryMutation) Field(name string) (ent.Value, bool) {
+	switch name {
+	case lasttry.FieldTry:
+		return m.Try()
+	}
+	return nil, false
+}
+
+// OldField returns the old value of the field from the database. An error is
+// returned if the mutation operation is not UpdateOne, or the query to the
+// database failed.
+func (m *LastTryMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
+	switch name {
+	case lasttry.FieldTry:
+		return m.OldTry(ctx)
+	}
+	return nil, fmt.Errorf("unknown LastTry field %s", name)
+}
+
+// SetField sets the value of a field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LastTryMutation) SetField(name string, value ent.Value) error {
+	switch name {
+	case lasttry.FieldTry:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTry(v)
+		return nil
+	}
+	return fmt.Errorf("unknown LastTry field %s", name)
+}
+
+// AddedFields returns all numeric fields that were incremented/decremented during
+// this mutation.
+func (m *LastTryMutation) AddedFields() []string {
+	return nil
+}
+
+// AddedField returns the numeric value that was incremented/decremented on a field
+// with the given name. The second boolean return value indicates that this field
+// was not set, or was not defined in the schema.
+func (m *LastTryMutation) AddedField(name string) (ent.Value, bool) {
+	return nil, false
+}
+
+// AddField adds the value to the field with the given name. It returns an error if
+// the field is not defined in the schema, or if the type mismatched the field
+// type.
+func (m *LastTryMutation) AddField(name string, value ent.Value) error {
+	switch name {
+	}
+	return fmt.Errorf("unknown LastTry numeric field %s", name)
+}
+
+// ClearedFields returns all nullable fields that were cleared during this
+// mutation.
+func (m *LastTryMutation) ClearedFields() []string {
+	return nil
+}
+
+// FieldCleared returns a boolean indicating if a field with the given name was
+// cleared in this mutation.
+func (m *LastTryMutation) FieldCleared(name string) bool {
+	_, ok := m.clearedFields[name]
+	return ok
+}
+
+// ClearField clears the value of the field with the given name. It returns an
+// error if the field is not defined in the schema.
+func (m *LastTryMutation) ClearField(name string) error {
+	return fmt.Errorf("unknown LastTry nullable field %s", name)
+}
+
+// ResetField resets all changes in the mutation for the field with the given name.
+// It returns an error if the field is not defined in the schema.
+func (m *LastTryMutation) ResetField(name string) error {
+	switch name {
+	case lasttry.FieldTry:
+		m.ResetTry()
+		return nil
+	}
+	return fmt.Errorf("unknown LastTry field %s", name)
+}
+
+// AddedEdges returns all edge names that were set/added in this mutation.
+func (m *LastTryMutation) AddedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// AddedIDs returns all IDs (to other nodes) that were added for the given edge
+// name in this mutation.
+func (m *LastTryMutation) AddedIDs(name string) []ent.Value {
+	return nil
+}
+
+// RemovedEdges returns all edge names that were removed in this mutation.
+func (m *LastTryMutation) RemovedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
+// the given name in this mutation.
+func (m *LastTryMutation) RemovedIDs(name string) []ent.Value {
+	return nil
+}
+
+// ClearedEdges returns all edge names that were cleared in this mutation.
+func (m *LastTryMutation) ClearedEdges() []string {
+	edges := make([]string, 0, 0)
+	return edges
+}
+
+// EdgeCleared returns a boolean which indicates if the edge with the given name
+// was cleared in this mutation.
+func (m *LastTryMutation) EdgeCleared(name string) bool {
+	return false
+}
+
+// ClearEdge clears the value of the edge with the given name. It returns an error
+// if that edge is not defined in the schema.
+func (m *LastTryMutation) ClearEdge(name string) error {
+	return fmt.Errorf("unknown LastTry unique edge %s", name)
+}
+
+// ResetEdge resets all changes to the edge with the given name in this mutation.
+// It returns an error if the edge is not defined in the schema.
+func (m *LastTryMutation) ResetEdge(name string) error {
+	return fmt.Errorf("unknown LastTry edge %s", name)
+}
+
 // TelegramChannelMutation represents an operation that mutates the TelegramChannel nodes in the graph.
 type TelegramChannelMutation struct {
 	config
-	op                    Op
-	typ                   string
-	id                    *int64
-	access_hash           *int64
-	addaccess_hash        *int64
-	title                 *string
-	save_records          *bool
-	save_favorite_records *bool
-	active                *bool
-	clearedFields         map[string]struct{}
-	done                  bool
-	oldValue              func(context.Context) (*TelegramChannel, error)
-	predicates            []predicate.TelegramChannel
+	op             Op
+	typ            string
+	id             *int64
+	access_hash    *int64
+	addaccess_hash *int64
+	title          *string
+	active         *bool
+	clearedFields  map[string]struct{}
+	done           bool
+	oldValue       func(context.Context) (*TelegramChannel, error)
+	predicates     []predicate.TelegramChannel
 }
 
 var _ ent.Mutation = (*TelegramChannelMutation)(nil)
@@ -242,104 +575,6 @@ func (m *TelegramChannelMutation) ResetTitle() {
 	m.title = nil
 }
 
-// SetSaveRecords sets the "save_records" field.
-func (m *TelegramChannelMutation) SetSaveRecords(b bool) {
-	m.save_records = &b
-}
-
-// SaveRecords returns the value of the "save_records" field in the mutation.
-func (m *TelegramChannelMutation) SaveRecords() (r bool, exists bool) {
-	v := m.save_records
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSaveRecords returns the old "save_records" field's value of the TelegramChannel entity.
-// If the TelegramChannel object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TelegramChannelMutation) OldSaveRecords(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSaveRecords is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSaveRecords requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSaveRecords: %w", err)
-	}
-	return oldValue.SaveRecords, nil
-}
-
-// ClearSaveRecords clears the value of the "save_records" field.
-func (m *TelegramChannelMutation) ClearSaveRecords() {
-	m.save_records = nil
-	m.clearedFields[telegramchannel.FieldSaveRecords] = struct{}{}
-}
-
-// SaveRecordsCleared returns if the "save_records" field was cleared in this mutation.
-func (m *TelegramChannelMutation) SaveRecordsCleared() bool {
-	_, ok := m.clearedFields[telegramchannel.FieldSaveRecords]
-	return ok
-}
-
-// ResetSaveRecords resets all changes to the "save_records" field.
-func (m *TelegramChannelMutation) ResetSaveRecords() {
-	m.save_records = nil
-	delete(m.clearedFields, telegramchannel.FieldSaveRecords)
-}
-
-// SetSaveFavoriteRecords sets the "save_favorite_records" field.
-func (m *TelegramChannelMutation) SetSaveFavoriteRecords(b bool) {
-	m.save_favorite_records = &b
-}
-
-// SaveFavoriteRecords returns the value of the "save_favorite_records" field in the mutation.
-func (m *TelegramChannelMutation) SaveFavoriteRecords() (r bool, exists bool) {
-	v := m.save_favorite_records
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldSaveFavoriteRecords returns the old "save_favorite_records" field's value of the TelegramChannel entity.
-// If the TelegramChannel object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *TelegramChannelMutation) OldSaveFavoriteRecords(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldSaveFavoriteRecords is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldSaveFavoriteRecords requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldSaveFavoriteRecords: %w", err)
-	}
-	return oldValue.SaveFavoriteRecords, nil
-}
-
-// ClearSaveFavoriteRecords clears the value of the "save_favorite_records" field.
-func (m *TelegramChannelMutation) ClearSaveFavoriteRecords() {
-	m.save_favorite_records = nil
-	m.clearedFields[telegramchannel.FieldSaveFavoriteRecords] = struct{}{}
-}
-
-// SaveFavoriteRecordsCleared returns if the "save_favorite_records" field was cleared in this mutation.
-func (m *TelegramChannelMutation) SaveFavoriteRecordsCleared() bool {
-	_, ok := m.clearedFields[telegramchannel.FieldSaveFavoriteRecords]
-	return ok
-}
-
-// ResetSaveFavoriteRecords resets all changes to the "save_favorite_records" field.
-func (m *TelegramChannelMutation) ResetSaveFavoriteRecords() {
-	m.save_favorite_records = nil
-	delete(m.clearedFields, telegramchannel.FieldSaveFavoriteRecords)
-}
-
 // SetActive sets the "active" field.
 func (m *TelegramChannelMutation) SetActive(b bool) {
 	m.active = &b
@@ -410,18 +645,12 @@ func (m *TelegramChannelMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TelegramChannelMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 3)
 	if m.access_hash != nil {
 		fields = append(fields, telegramchannel.FieldAccessHash)
 	}
 	if m.title != nil {
 		fields = append(fields, telegramchannel.FieldTitle)
-	}
-	if m.save_records != nil {
-		fields = append(fields, telegramchannel.FieldSaveRecords)
-	}
-	if m.save_favorite_records != nil {
-		fields = append(fields, telegramchannel.FieldSaveFavoriteRecords)
 	}
 	if m.active != nil {
 		fields = append(fields, telegramchannel.FieldActive)
@@ -438,10 +667,6 @@ func (m *TelegramChannelMutation) Field(name string) (ent.Value, bool) {
 		return m.AccessHash()
 	case telegramchannel.FieldTitle:
 		return m.Title()
-	case telegramchannel.FieldSaveRecords:
-		return m.SaveRecords()
-	case telegramchannel.FieldSaveFavoriteRecords:
-		return m.SaveFavoriteRecords()
 	case telegramchannel.FieldActive:
 		return m.Active()
 	}
@@ -457,10 +682,6 @@ func (m *TelegramChannelMutation) OldField(ctx context.Context, name string) (en
 		return m.OldAccessHash(ctx)
 	case telegramchannel.FieldTitle:
 		return m.OldTitle(ctx)
-	case telegramchannel.FieldSaveRecords:
-		return m.OldSaveRecords(ctx)
-	case telegramchannel.FieldSaveFavoriteRecords:
-		return m.OldSaveFavoriteRecords(ctx)
 	case telegramchannel.FieldActive:
 		return m.OldActive(ctx)
 	}
@@ -485,20 +706,6 @@ func (m *TelegramChannelMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTitle(v)
-		return nil
-	case telegramchannel.FieldSaveRecords:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSaveRecords(v)
-		return nil
-	case telegramchannel.FieldSaveFavoriteRecords:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetSaveFavoriteRecords(v)
 		return nil
 	case telegramchannel.FieldActive:
 		v, ok := value.(bool)
@@ -551,14 +758,7 @@ func (m *TelegramChannelMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *TelegramChannelMutation) ClearedFields() []string {
-	var fields []string
-	if m.FieldCleared(telegramchannel.FieldSaveRecords) {
-		fields = append(fields, telegramchannel.FieldSaveRecords)
-	}
-	if m.FieldCleared(telegramchannel.FieldSaveFavoriteRecords) {
-		fields = append(fields, telegramchannel.FieldSaveFavoriteRecords)
-	}
-	return fields
+	return nil
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -571,14 +771,6 @@ func (m *TelegramChannelMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *TelegramChannelMutation) ClearField(name string) error {
-	switch name {
-	case telegramchannel.FieldSaveRecords:
-		m.ClearSaveRecords()
-		return nil
-	case telegramchannel.FieldSaveFavoriteRecords:
-		m.ClearSaveFavoriteRecords()
-		return nil
-	}
 	return fmt.Errorf("unknown TelegramChannel nullable field %s", name)
 }
 
@@ -591,12 +783,6 @@ func (m *TelegramChannelMutation) ResetField(name string) error {
 		return nil
 	case telegramchannel.FieldTitle:
 		m.ResetTitle()
-		return nil
-	case telegramchannel.FieldSaveRecords:
-		m.ResetSaveRecords()
-		return nil
-	case telegramchannel.FieldSaveFavoriteRecords:
-		m.ResetSaveFavoriteRecords()
 		return nil
 	case telegramchannel.FieldActive:
 		m.ResetActive()

@@ -15,10 +15,6 @@ const (
 	FieldAccessHash = "access_hash"
 	// FieldTitle holds the string denoting the title field in the database.
 	FieldTitle = "title"
-	// FieldSaveRecords holds the string denoting the save_records field in the database.
-	FieldSaveRecords = "save_records"
-	// FieldSaveFavoriteRecords holds the string denoting the save_favorite_records field in the database.
-	FieldSaveFavoriteRecords = "save_favorite_records"
 	// FieldActive holds the string denoting the active field in the database.
 	FieldActive = "active"
 	// Table holds the table name of the telegramchannel in the database.
@@ -30,8 +26,6 @@ var Columns = []string{
 	FieldID,
 	FieldAccessHash,
 	FieldTitle,
-	FieldSaveRecords,
-	FieldSaveFavoriteRecords,
 	FieldActive,
 }
 
@@ -61,16 +55,6 @@ func ByAccessHash(opts ...sql.OrderTermOption) OrderOption {
 // ByTitle orders the results by the title field.
 func ByTitle(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTitle, opts...).ToFunc()
-}
-
-// BySaveRecords orders the results by the save_records field.
-func BySaveRecords(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSaveRecords, opts...).ToFunc()
-}
-
-// BySaveFavoriteRecords orders the results by the save_favorite_records field.
-func BySaveFavoriteRecords(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldSaveFavoriteRecords, opts...).ToFunc()
 }
 
 // ByActive orders the results by the active field.
