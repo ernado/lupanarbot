@@ -18,7 +18,7 @@ require (
 	github.com/gotd/td v0.129.0
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/klauspost/compress v1.18.0
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	github.com/testcontainers/testcontainers-go v0.38.0
 	go.opentelemetry.io/otel/trace v1.37.0
 	go.uber.org/multierr v1.11.0
