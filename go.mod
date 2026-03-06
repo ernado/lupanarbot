@@ -10,7 +10,7 @@ tool (
 
 require (
 	entgo.io/ent v0.14.4
-	github.com/XSAM/otelsql v0.39.0
+	github.com/XSAM/otelsql v0.41.0
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/sdk v0.28.0
 	github.com/google/uuid v1.6.0
