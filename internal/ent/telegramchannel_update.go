@@ -22,73 +22,73 @@ type TelegramChannelUpdate struct {
 }
 
 // Where appends a list predicates to the TelegramChannelUpdate builder.
-func (tcu *TelegramChannelUpdate) Where(ps ...predicate.TelegramChannel) *TelegramChannelUpdate {
-	tcu.mutation.Where(ps...)
-	return tcu
+func (_u *TelegramChannelUpdate) Where(ps ...predicate.TelegramChannel) *TelegramChannelUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetAccessHash sets the "access_hash" field.
-func (tcu *TelegramChannelUpdate) SetAccessHash(i int64) *TelegramChannelUpdate {
-	tcu.mutation.ResetAccessHash()
-	tcu.mutation.SetAccessHash(i)
-	return tcu
+func (_u *TelegramChannelUpdate) SetAccessHash(v int64) *TelegramChannelUpdate {
+	_u.mutation.ResetAccessHash()
+	_u.mutation.SetAccessHash(v)
+	return _u
 }
 
 // SetNillableAccessHash sets the "access_hash" field if the given value is not nil.
-func (tcu *TelegramChannelUpdate) SetNillableAccessHash(i *int64) *TelegramChannelUpdate {
-	if i != nil {
-		tcu.SetAccessHash(*i)
+func (_u *TelegramChannelUpdate) SetNillableAccessHash(v *int64) *TelegramChannelUpdate {
+	if v != nil {
+		_u.SetAccessHash(*v)
 	}
-	return tcu
+	return _u
 }
 
-// AddAccessHash adds i to the "access_hash" field.
-func (tcu *TelegramChannelUpdate) AddAccessHash(i int64) *TelegramChannelUpdate {
-	tcu.mutation.AddAccessHash(i)
-	return tcu
+// AddAccessHash adds value to the "access_hash" field.
+func (_u *TelegramChannelUpdate) AddAccessHash(v int64) *TelegramChannelUpdate {
+	_u.mutation.AddAccessHash(v)
+	return _u
 }
 
 // SetTitle sets the "title" field.
-func (tcu *TelegramChannelUpdate) SetTitle(s string) *TelegramChannelUpdate {
-	tcu.mutation.SetTitle(s)
-	return tcu
+func (_u *TelegramChannelUpdate) SetTitle(v string) *TelegramChannelUpdate {
+	_u.mutation.SetTitle(v)
+	return _u
 }
 
 // SetNillableTitle sets the "title" field if the given value is not nil.
-func (tcu *TelegramChannelUpdate) SetNillableTitle(s *string) *TelegramChannelUpdate {
-	if s != nil {
-		tcu.SetTitle(*s)
+func (_u *TelegramChannelUpdate) SetNillableTitle(v *string) *TelegramChannelUpdate {
+	if v != nil {
+		_u.SetTitle(*v)
 	}
-	return tcu
+	return _u
 }
 
 // SetActive sets the "active" field.
-func (tcu *TelegramChannelUpdate) SetActive(b bool) *TelegramChannelUpdate {
-	tcu.mutation.SetActive(b)
-	return tcu
+func (_u *TelegramChannelUpdate) SetActive(v bool) *TelegramChannelUpdate {
+	_u.mutation.SetActive(v)
+	return _u
 }
 
 // SetNillableActive sets the "active" field if the given value is not nil.
-func (tcu *TelegramChannelUpdate) SetNillableActive(b *bool) *TelegramChannelUpdate {
-	if b != nil {
-		tcu.SetActive(*b)
+func (_u *TelegramChannelUpdate) SetNillableActive(v *bool) *TelegramChannelUpdate {
+	if v != nil {
+		_u.SetActive(*v)
 	}
-	return tcu
+	return _u
 }
 
 // Mutation returns the TelegramChannelMutation object of the builder.
-func (tcu *TelegramChannelUpdate) Mutation() *TelegramChannelMutation {
-	return tcu.mutation
+func (_u *TelegramChannelUpdate) Mutation() *TelegramChannelMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tcu *TelegramChannelUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tcu.sqlSave, tcu.mutation, tcu.hooks)
+func (_u *TelegramChannelUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tcu *TelegramChannelUpdate) SaveX(ctx context.Context) int {
-	affected, err := tcu.Save(ctx)
+func (_u *TelegramChannelUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -96,40 +96,40 @@ func (tcu *TelegramChannelUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tcu *TelegramChannelUpdate) Exec(ctx context.Context) error {
-	_, err := tcu.Save(ctx)
+func (_u *TelegramChannelUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tcu *TelegramChannelUpdate) ExecX(ctx context.Context) {
-	if err := tcu.Exec(ctx); err != nil {
+func (_u *TelegramChannelUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tcu *TelegramChannelUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *TelegramChannelUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(telegramchannel.Table, telegramchannel.Columns, sqlgraph.NewFieldSpec(telegramchannel.FieldID, field.TypeInt64))
-	if ps := tcu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tcu.mutation.AccessHash(); ok {
+	if value, ok := _u.mutation.AccessHash(); ok {
 		_spec.SetField(telegramchannel.FieldAccessHash, field.TypeInt64, value)
 	}
-	if value, ok := tcu.mutation.AddedAccessHash(); ok {
+	if value, ok := _u.mutation.AddedAccessHash(); ok {
 		_spec.AddField(telegramchannel.FieldAccessHash, field.TypeInt64, value)
 	}
-	if value, ok := tcu.mutation.Title(); ok {
+	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(telegramchannel.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := tcu.mutation.Active(); ok {
+	if value, ok := _u.mutation.Active(); ok {
 		_spec.SetField(telegramchannel.FieldActive, field.TypeBool, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tcu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{telegramchannel.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -137,8 +137,8 @@ func (tcu *TelegramChannelUpdate) sqlSave(ctx context.Context) (n int, err error
 		}
 		return 0, err
 	}
-	tcu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TelegramChannelUpdateOne is the builder for updating a single TelegramChannel entity.
@@ -150,80 +150,80 @@ type TelegramChannelUpdateOne struct {
 }
 
 // SetAccessHash sets the "access_hash" field.
-func (tcuo *TelegramChannelUpdateOne) SetAccessHash(i int64) *TelegramChannelUpdateOne {
-	tcuo.mutation.ResetAccessHash()
-	tcuo.mutation.SetAccessHash(i)
-	return tcuo
+func (_u *TelegramChannelUpdateOne) SetAccessHash(v int64) *TelegramChannelUpdateOne {
+	_u.mutation.ResetAccessHash()
+	_u.mutation.SetAccessHash(v)
+	return _u
 }
 
 // SetNillableAccessHash sets the "access_hash" field if the given value is not nil.
-func (tcuo *TelegramChannelUpdateOne) SetNillableAccessHash(i *int64) *TelegramChannelUpdateOne {
-	if i != nil {
-		tcuo.SetAccessHash(*i)
+func (_u *TelegramChannelUpdateOne) SetNillableAccessHash(v *int64) *TelegramChannelUpdateOne {
+	if v != nil {
+		_u.SetAccessHash(*v)
 	}
-	return tcuo
+	return _u
 }
 
-// AddAccessHash adds i to the "access_hash" field.
-func (tcuo *TelegramChannelUpdateOne) AddAccessHash(i int64) *TelegramChannelUpdateOne {
-	tcuo.mutation.AddAccessHash(i)
-	return tcuo
+// AddAccessHash adds value to the "access_hash" field.
+func (_u *TelegramChannelUpdateOne) AddAccessHash(v int64) *TelegramChannelUpdateOne {
+	_u.mutation.AddAccessHash(v)
+	return _u
 }
 
 // SetTitle sets the "title" field.
-func (tcuo *TelegramChannelUpdateOne) SetTitle(s string) *TelegramChannelUpdateOne {
-	tcuo.mutation.SetTitle(s)
-	return tcuo
+func (_u *TelegramChannelUpdateOne) SetTitle(v string) *TelegramChannelUpdateOne {
+	_u.mutation.SetTitle(v)
+	return _u
 }
 
 // SetNillableTitle sets the "title" field if the given value is not nil.
-func (tcuo *TelegramChannelUpdateOne) SetNillableTitle(s *string) *TelegramChannelUpdateOne {
-	if s != nil {
-		tcuo.SetTitle(*s)
+func (_u *TelegramChannelUpdateOne) SetNillableTitle(v *string) *TelegramChannelUpdateOne {
+	if v != nil {
+		_u.SetTitle(*v)
 	}
-	return tcuo
+	return _u
 }
 
 // SetActive sets the "active" field.
-func (tcuo *TelegramChannelUpdateOne) SetActive(b bool) *TelegramChannelUpdateOne {
-	tcuo.mutation.SetActive(b)
-	return tcuo
+func (_u *TelegramChannelUpdateOne) SetActive(v bool) *TelegramChannelUpdateOne {
+	_u.mutation.SetActive(v)
+	return _u
 }
 
 // SetNillableActive sets the "active" field if the given value is not nil.
-func (tcuo *TelegramChannelUpdateOne) SetNillableActive(b *bool) *TelegramChannelUpdateOne {
-	if b != nil {
-		tcuo.SetActive(*b)
+func (_u *TelegramChannelUpdateOne) SetNillableActive(v *bool) *TelegramChannelUpdateOne {
+	if v != nil {
+		_u.SetActive(*v)
 	}
-	return tcuo
+	return _u
 }
 
 // Mutation returns the TelegramChannelMutation object of the builder.
-func (tcuo *TelegramChannelUpdateOne) Mutation() *TelegramChannelMutation {
-	return tcuo.mutation
+func (_u *TelegramChannelUpdateOne) Mutation() *TelegramChannelMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the TelegramChannelUpdate builder.
-func (tcuo *TelegramChannelUpdateOne) Where(ps ...predicate.TelegramChannel) *TelegramChannelUpdateOne {
-	tcuo.mutation.Where(ps...)
-	return tcuo
+func (_u *TelegramChannelUpdateOne) Where(ps ...predicate.TelegramChannel) *TelegramChannelUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tcuo *TelegramChannelUpdateOne) Select(field string, fields ...string) *TelegramChannelUpdateOne {
-	tcuo.fields = append([]string{field}, fields...)
-	return tcuo
+func (_u *TelegramChannelUpdateOne) Select(field string, fields ...string) *TelegramChannelUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated TelegramChannel entity.
-func (tcuo *TelegramChannelUpdateOne) Save(ctx context.Context) (*TelegramChannel, error) {
-	return withHooks(ctx, tcuo.sqlSave, tcuo.mutation, tcuo.hooks)
+func (_u *TelegramChannelUpdateOne) Save(ctx context.Context) (*TelegramChannel, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tcuo *TelegramChannelUpdateOne) SaveX(ctx context.Context) *TelegramChannel {
-	node, err := tcuo.Save(ctx)
+func (_u *TelegramChannelUpdateOne) SaveX(ctx context.Context) *TelegramChannel {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -231,26 +231,26 @@ func (tcuo *TelegramChannelUpdateOne) SaveX(ctx context.Context) *TelegramChanne
 }
 
 // Exec executes the query on the entity.
-func (tcuo *TelegramChannelUpdateOne) Exec(ctx context.Context) error {
-	_, err := tcuo.Save(ctx)
+func (_u *TelegramChannelUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tcuo *TelegramChannelUpdateOne) ExecX(ctx context.Context) {
-	if err := tcuo.Exec(ctx); err != nil {
+func (_u *TelegramChannelUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
-func (tcuo *TelegramChannelUpdateOne) sqlSave(ctx context.Context) (_node *TelegramChannel, err error) {
+func (_u *TelegramChannelUpdateOne) sqlSave(ctx context.Context) (_node *TelegramChannel, err error) {
 	_spec := sqlgraph.NewUpdateSpec(telegramchannel.Table, telegramchannel.Columns, sqlgraph.NewFieldSpec(telegramchannel.FieldID, field.TypeInt64))
-	id, ok := tcuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "TelegramChannel.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tcuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, telegramchannel.FieldID)
 		for _, f := range fields {
@@ -262,29 +262,29 @@ func (tcuo *TelegramChannelUpdateOne) sqlSave(ctx context.Context) (_node *Teleg
 			}
 		}
 	}
-	if ps := tcuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tcuo.mutation.AccessHash(); ok {
+	if value, ok := _u.mutation.AccessHash(); ok {
 		_spec.SetField(telegramchannel.FieldAccessHash, field.TypeInt64, value)
 	}
-	if value, ok := tcuo.mutation.AddedAccessHash(); ok {
+	if value, ok := _u.mutation.AddedAccessHash(); ok {
 		_spec.AddField(telegramchannel.FieldAccessHash, field.TypeInt64, value)
 	}
-	if value, ok := tcuo.mutation.Title(); ok {
+	if value, ok := _u.mutation.Title(); ok {
 		_spec.SetField(telegramchannel.FieldTitle, field.TypeString, value)
 	}
-	if value, ok := tcuo.mutation.Active(); ok {
+	if value, ok := _u.mutation.Active(); ok {
 		_spec.SetField(telegramchannel.FieldActive, field.TypeBool, value)
 	}
-	_node = &TelegramChannel{config: tcuo.config}
+	_node = &TelegramChannel{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tcuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{telegramchannel.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -292,6 +292,6 @@ func (tcuo *TelegramChannelUpdateOne) sqlSave(ctx context.Context) (_node *Teleg
 		}
 		return nil, err
 	}
-	tcuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

@@ -25,51 +25,51 @@ type TryCreate struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (tc *TryCreate) SetUserID(i int64) *TryCreate {
-	tc.mutation.SetUserID(i)
-	return tc
+func (_c *TryCreate) SetUserID(v int64) *TryCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (tc *TryCreate) SetCreatedAt(t time.Time) *TryCreate {
-	tc.mutation.SetCreatedAt(t)
-	return tc
+func (_c *TryCreate) SetCreatedAt(v time.Time) *TryCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
 }
 
 // SetType sets the "type" field.
-func (tc *TryCreate) SetType(t try.Type) *TryCreate {
-	tc.mutation.SetType(t)
-	return tc
+func (_c *TryCreate) SetType(v try.Type) *TryCreate {
+	_c.mutation.SetType(v)
+	return _c
 }
 
 // SetID sets the "id" field.
-func (tc *TryCreate) SetID(u uuid.UUID) *TryCreate {
-	tc.mutation.SetID(u)
-	return tc
+func (_c *TryCreate) SetID(v uuid.UUID) *TryCreate {
+	_c.mutation.SetID(v)
+	return _c
 }
 
 // SetNillableID sets the "id" field if the given value is not nil.
-func (tc *TryCreate) SetNillableID(u *uuid.UUID) *TryCreate {
-	if u != nil {
-		tc.SetID(*u)
+func (_c *TryCreate) SetNillableID(v *uuid.UUID) *TryCreate {
+	if v != nil {
+		_c.SetID(*v)
 	}
-	return tc
+	return _c
 }
 
 // Mutation returns the TryMutation object of the builder.
-func (tc *TryCreate) Mutation() *TryMutation {
-	return tc.mutation
+func (_c *TryCreate) Mutation() *TryMutation {
+	return _c.mutation
 }
 
 // Save creates the Try in the database.
-func (tc *TryCreate) Save(ctx context.Context) (*Try, error) {
-	tc.defaults()
-	return withHooks(ctx, tc.sqlSave, tc.mutation, tc.hooks)
+func (_c *TryCreate) Save(ctx context.Context) (*Try, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (tc *TryCreate) SaveX(ctx context.Context) *Try {
-	v, err := tc.Save(ctx)
+func (_c *TryCreate) SaveX(ctx context.Context) *Try {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -77,38 +77,38 @@ func (tc *TryCreate) SaveX(ctx context.Context) *Try {
 }
 
 // Exec executes the query.
-func (tc *TryCreate) Exec(ctx context.Context) error {
-	_, err := tc.Save(ctx)
+func (_c *TryCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tc *TryCreate) ExecX(ctx context.Context) {
-	if err := tc.Exec(ctx); err != nil {
+func (_c *TryCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (tc *TryCreate) defaults() {
-	if _, ok := tc.mutation.ID(); !ok {
+func (_c *TryCreate) defaults() {
+	if _, ok := _c.mutation.ID(); !ok {
 		v := try.DefaultID()
-		tc.mutation.SetID(v)
+		_c.mutation.SetID(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tc *TryCreate) check() error {
-	if _, ok := tc.mutation.UserID(); !ok {
+func (_c *TryCreate) check() error {
+	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Try.user_id"`)}
 	}
-	if _, ok := tc.mutation.CreatedAt(); !ok {
+	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Try.created_at"`)}
 	}
-	if _, ok := tc.mutation.GetType(); !ok {
+	if _, ok := _c.mutation.GetType(); !ok {
 		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "Try.type"`)}
 	}
-	if v, ok := tc.mutation.GetType(); ok {
+	if v, ok := _c.mutation.GetType(); ok {
 		if err := try.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Try.type": %w`, err)}
 		}
@@ -116,12 +116,12 @@ func (tc *TryCreate) check() error {
 	return nil
 }
 
-func (tc *TryCreate) sqlSave(ctx context.Context) (*Try, error) {
-	if err := tc.check(); err != nil {
+func (_c *TryCreate) sqlSave(ctx context.Context) (*Try, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := tc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, tc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -134,30 +134,30 @@ func (tc *TryCreate) sqlSave(ctx context.Context) (*Try, error) {
 			return nil, err
 		}
 	}
-	tc.mutation.id = &_node.ID
-	tc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (tc *TryCreate) createSpec() (*Try, *sqlgraph.CreateSpec) {
+func (_c *TryCreate) createSpec() (*Try, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Try{config: tc.config}
+		_node = &Try{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(try.Table, sqlgraph.NewFieldSpec(try.FieldID, field.TypeUUID))
 	)
-	_spec.OnConflict = tc.conflict
-	if id, ok := tc.mutation.ID(); ok {
+	_spec.OnConflict = _c.conflict
+	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = &id
 	}
-	if value, ok := tc.mutation.UserID(); ok {
+	if value, ok := _c.mutation.UserID(); ok {
 		_spec.SetField(try.FieldUserID, field.TypeInt64, value)
 		_node.UserID = value
 	}
-	if value, ok := tc.mutation.CreatedAt(); ok {
+	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(try.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
 	}
-	if value, ok := tc.mutation.GetType(); ok {
+	if value, ok := _c.mutation.GetType(); ok {
 		_spec.SetField(try.FieldType, field.TypeEnum, value)
 		_node.Type = value
 	}
@@ -180,10 +180,10 @@ func (tc *TryCreate) createSpec() (*Try, *sqlgraph.CreateSpec) {
 //			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
-func (tc *TryCreate) OnConflict(opts ...sql.ConflictOption) *TryUpsertOne {
-	tc.conflict = opts
+func (_c *TryCreate) OnConflict(opts ...sql.ConflictOption) *TryUpsertOne {
+	_c.conflict = opts
 	return &TryUpsertOne{
-		create: tc,
+		create: _c,
 	}
 }
 
@@ -193,10 +193,10 @@ func (tc *TryCreate) OnConflict(opts ...sql.ConflictOption) *TryUpsertOne {
 //	client.Try.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tc *TryCreate) OnConflictColumns(columns ...string) *TryUpsertOne {
-	tc.conflict = append(tc.conflict, sql.ConflictColumns(columns...))
+func (_c *TryCreate) OnConflictColumns(columns ...string) *TryUpsertOne {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TryUpsertOne{
-		create: tc,
+		create: _c,
 	}
 }
 
@@ -399,16 +399,16 @@ type TryCreateBulk struct {
 }
 
 // Save creates the Try entities in the database.
-func (tcb *TryCreateBulk) Save(ctx context.Context) ([]*Try, error) {
-	if tcb.err != nil {
-		return nil, tcb.err
+func (_c *TryCreateBulk) Save(ctx context.Context) ([]*Try, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(tcb.builders))
-	nodes := make([]*Try, len(tcb.builders))
-	mutators := make([]Mutator, len(tcb.builders))
-	for i := range tcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Try, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := tcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*TryMutation)
@@ -422,12 +422,12 @@ func (tcb *TryCreateBulk) Save(ctx context.Context) ([]*Try, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, tcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
-					spec.OnConflict = tcb.conflict
+					spec.OnConflict = _c.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, tcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -447,7 +447,7 @@ func (tcb *TryCreateBulk) Save(ctx context.Context) ([]*Try, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, tcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -455,8 +455,8 @@ func (tcb *TryCreateBulk) Save(ctx context.Context) ([]*Try, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tcb *TryCreateBulk) SaveX(ctx context.Context) []*Try {
-	v, err := tcb.Save(ctx)
+func (_c *TryCreateBulk) SaveX(ctx context.Context) []*Try {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -464,14 +464,14 @@ func (tcb *TryCreateBulk) SaveX(ctx context.Context) []*Try {
 }
 
 // Exec executes the query.
-func (tcb *TryCreateBulk) Exec(ctx context.Context) error {
-	_, err := tcb.Save(ctx)
+func (_c *TryCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tcb *TryCreateBulk) ExecX(ctx context.Context) {
-	if err := tcb.Exec(ctx); err != nil {
+func (_c *TryCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
@@ -491,10 +491,10 @@ func (tcb *TryCreateBulk) ExecX(ctx context.Context) {
 //			SetUserID(v+v).
 //		}).
 //		Exec(ctx)
-func (tcb *TryCreateBulk) OnConflict(opts ...sql.ConflictOption) *TryUpsertBulk {
-	tcb.conflict = opts
+func (_c *TryCreateBulk) OnConflict(opts ...sql.ConflictOption) *TryUpsertBulk {
+	_c.conflict = opts
 	return &TryUpsertBulk{
-		create: tcb,
+		create: _c,
 	}
 }
 
@@ -504,10 +504,10 @@ func (tcb *TryCreateBulk) OnConflict(opts ...sql.ConflictOption) *TryUpsertBulk 
 //	client.Try.Create().
 //		OnConflict(sql.ConflictColumns(columns...)).
 //		Exec(ctx)
-func (tcb *TryCreateBulk) OnConflictColumns(columns ...string) *TryUpsertBulk {
-	tcb.conflict = append(tcb.conflict, sql.ConflictColumns(columns...))
+func (_c *TryCreateBulk) OnConflictColumns(columns ...string) *TryUpsertBulk {
+	_c.conflict = append(_c.conflict, sql.ConflictColumns(columns...))
 	return &TryUpsertBulk{
-		create: tcb,
+		create: _c,
 	}
 }
 

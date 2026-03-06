@@ -23,73 +23,73 @@ type TryUpdate struct {
 }
 
 // Where appends a list predicates to the TryUpdate builder.
-func (tu *TryUpdate) Where(ps ...predicate.Try) *TryUpdate {
-	tu.mutation.Where(ps...)
-	return tu
+func (_u *TryUpdate) Where(ps ...predicate.Try) *TryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (tu *TryUpdate) SetUserID(i int64) *TryUpdate {
-	tu.mutation.ResetUserID()
-	tu.mutation.SetUserID(i)
-	return tu
+func (_u *TryUpdate) SetUserID(v int64) *TryUpdate {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tu *TryUpdate) SetNillableUserID(i *int64) *TryUpdate {
-	if i != nil {
-		tu.SetUserID(*i)
+func (_u *TryUpdate) SetNillableUserID(v *int64) *TryUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return tu
+	return _u
 }
 
-// AddUserID adds i to the "user_id" field.
-func (tu *TryUpdate) AddUserID(i int64) *TryUpdate {
-	tu.mutation.AddUserID(i)
-	return tu
+// AddUserID adds value to the "user_id" field.
+func (_u *TryUpdate) AddUserID(v int64) *TryUpdate {
+	_u.mutation.AddUserID(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (tu *TryUpdate) SetCreatedAt(t time.Time) *TryUpdate {
-	tu.mutation.SetCreatedAt(t)
-	return tu
+func (_u *TryUpdate) SetCreatedAt(v time.Time) *TryUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (tu *TryUpdate) SetNillableCreatedAt(t *time.Time) *TryUpdate {
-	if t != nil {
-		tu.SetCreatedAt(*t)
+func (_u *TryUpdate) SetNillableCreatedAt(v *time.Time) *TryUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return tu
+	return _u
 }
 
 // SetType sets the "type" field.
-func (tu *TryUpdate) SetType(t try.Type) *TryUpdate {
-	tu.mutation.SetType(t)
-	return tu
+func (_u *TryUpdate) SetType(v try.Type) *TryUpdate {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (tu *TryUpdate) SetNillableType(t *try.Type) *TryUpdate {
-	if t != nil {
-		tu.SetType(*t)
+func (_u *TryUpdate) SetNillableType(v *try.Type) *TryUpdate {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return tu
+	return _u
 }
 
 // Mutation returns the TryMutation object of the builder.
-func (tu *TryUpdate) Mutation() *TryMutation {
-	return tu.mutation
+func (_u *TryUpdate) Mutation() *TryMutation {
+	return _u.mutation
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (tu *TryUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, tu.sqlSave, tu.mutation, tu.hooks)
+func (_u *TryUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tu *TryUpdate) SaveX(ctx context.Context) int {
-	affected, err := tu.Save(ctx)
+func (_u *TryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -97,21 +97,21 @@ func (tu *TryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (tu *TryUpdate) Exec(ctx context.Context) error {
-	_, err := tu.Save(ctx)
+func (_u *TryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tu *TryUpdate) ExecX(ctx context.Context) {
-	if err := tu.Exec(ctx); err != nil {
+func (_u *TryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tu *TryUpdate) check() error {
-	if v, ok := tu.mutation.GetType(); ok {
+func (_u *TryUpdate) check() error {
+	if v, ok := _u.mutation.GetType(); ok {
 		if err := try.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Try.type": %w`, err)}
 		}
@@ -119,31 +119,31 @@ func (tu *TryUpdate) check() error {
 	return nil
 }
 
-func (tu *TryUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := tu.check(); err != nil {
-		return n, err
+func (_u *TryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(try.Table, try.Columns, sqlgraph.NewFieldSpec(try.FieldID, field.TypeUUID))
-	if ps := tu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tu.mutation.UserID(); ok {
+	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(try.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := tu.mutation.AddedUserID(); ok {
+	if value, ok := _u.mutation.AddedUserID(); ok {
 		_spec.AddField(try.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := tu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(try.FieldCreatedAt, field.TypeTime, value)
 	}
-	if value, ok := tu.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(try.FieldType, field.TypeEnum, value)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{try.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -151,8 +151,8 @@ func (tu *TryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	tu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // TryUpdateOne is the builder for updating a single Try entity.
@@ -164,80 +164,80 @@ type TryUpdateOne struct {
 }
 
 // SetUserID sets the "user_id" field.
-func (tuo *TryUpdateOne) SetUserID(i int64) *TryUpdateOne {
-	tuo.mutation.ResetUserID()
-	tuo.mutation.SetUserID(i)
-	return tuo
+func (_u *TryUpdateOne) SetUserID(v int64) *TryUpdateOne {
+	_u.mutation.ResetUserID()
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tuo *TryUpdateOne) SetNillableUserID(i *int64) *TryUpdateOne {
-	if i != nil {
-		tuo.SetUserID(*i)
+func (_u *TryUpdateOne) SetNillableUserID(v *int64) *TryUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return tuo
+	return _u
 }
 
-// AddUserID adds i to the "user_id" field.
-func (tuo *TryUpdateOne) AddUserID(i int64) *TryUpdateOne {
-	tuo.mutation.AddUserID(i)
-	return tuo
+// AddUserID adds value to the "user_id" field.
+func (_u *TryUpdateOne) AddUserID(v int64) *TryUpdateOne {
+	_u.mutation.AddUserID(v)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (tuo *TryUpdateOne) SetCreatedAt(t time.Time) *TryUpdateOne {
-	tuo.mutation.SetCreatedAt(t)
-	return tuo
+func (_u *TryUpdateOne) SetCreatedAt(v time.Time) *TryUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (tuo *TryUpdateOne) SetNillableCreatedAt(t *time.Time) *TryUpdateOne {
-	if t != nil {
-		tuo.SetCreatedAt(*t)
+func (_u *TryUpdateOne) SetNillableCreatedAt(v *time.Time) *TryUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return tuo
+	return _u
 }
 
 // SetType sets the "type" field.
-func (tuo *TryUpdateOne) SetType(t try.Type) *TryUpdateOne {
-	tuo.mutation.SetType(t)
-	return tuo
+func (_u *TryUpdateOne) SetType(v try.Type) *TryUpdateOne {
+	_u.mutation.SetType(v)
+	return _u
 }
 
 // SetNillableType sets the "type" field if the given value is not nil.
-func (tuo *TryUpdateOne) SetNillableType(t *try.Type) *TryUpdateOne {
-	if t != nil {
-		tuo.SetType(*t)
+func (_u *TryUpdateOne) SetNillableType(v *try.Type) *TryUpdateOne {
+	if v != nil {
+		_u.SetType(*v)
 	}
-	return tuo
+	return _u
 }
 
 // Mutation returns the TryMutation object of the builder.
-func (tuo *TryUpdateOne) Mutation() *TryMutation {
-	return tuo.mutation
+func (_u *TryUpdateOne) Mutation() *TryMutation {
+	return _u.mutation
 }
 
 // Where appends a list predicates to the TryUpdate builder.
-func (tuo *TryUpdateOne) Where(ps ...predicate.Try) *TryUpdateOne {
-	tuo.mutation.Where(ps...)
-	return tuo
+func (_u *TryUpdateOne) Where(ps ...predicate.Try) *TryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (tuo *TryUpdateOne) Select(field string, fields ...string) *TryUpdateOne {
-	tuo.fields = append([]string{field}, fields...)
-	return tuo
+func (_u *TryUpdateOne) Select(field string, fields ...string) *TryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Try entity.
-func (tuo *TryUpdateOne) Save(ctx context.Context) (*Try, error) {
-	return withHooks(ctx, tuo.sqlSave, tuo.mutation, tuo.hooks)
+func (_u *TryUpdateOne) Save(ctx context.Context) (*Try, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (tuo *TryUpdateOne) SaveX(ctx context.Context) *Try {
-	node, err := tuo.Save(ctx)
+func (_u *TryUpdateOne) SaveX(ctx context.Context) *Try {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -245,21 +245,21 @@ func (tuo *TryUpdateOne) SaveX(ctx context.Context) *Try {
 }
 
 // Exec executes the query on the entity.
-func (tuo *TryUpdateOne) Exec(ctx context.Context) error {
-	_, err := tuo.Save(ctx)
+func (_u *TryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (tuo *TryUpdateOne) ExecX(ctx context.Context) {
-	if err := tuo.Exec(ctx); err != nil {
+func (_u *TryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (tuo *TryUpdateOne) check() error {
-	if v, ok := tuo.mutation.GetType(); ok {
+func (_u *TryUpdateOne) check() error {
+	if v, ok := _u.mutation.GetType(); ok {
 		if err := try.TypeValidator(v); err != nil {
 			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Try.type": %w`, err)}
 		}
@@ -267,17 +267,17 @@ func (tuo *TryUpdateOne) check() error {
 	return nil
 }
 
-func (tuo *TryUpdateOne) sqlSave(ctx context.Context) (_node *Try, err error) {
-	if err := tuo.check(); err != nil {
+func (_u *TryUpdateOne) sqlSave(ctx context.Context) (_node *Try, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(try.Table, try.Columns, sqlgraph.NewFieldSpec(try.FieldID, field.TypeUUID))
-	id, ok := tuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Try.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := tuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, try.FieldID)
 		for _, f := range fields {
@@ -289,29 +289,29 @@ func (tuo *TryUpdateOne) sqlSave(ctx context.Context) (_node *Try, err error) {
 			}
 		}
 	}
-	if ps := tuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := tuo.mutation.UserID(); ok {
+	if value, ok := _u.mutation.UserID(); ok {
 		_spec.SetField(try.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := tuo.mutation.AddedUserID(); ok {
+	if value, ok := _u.mutation.AddedUserID(); ok {
 		_spec.AddField(try.FieldUserID, field.TypeInt64, value)
 	}
-	if value, ok := tuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(try.FieldCreatedAt, field.TypeTime, value)
 	}
-	if value, ok := tuo.mutation.GetType(); ok {
+	if value, ok := _u.mutation.GetType(); ok {
 		_spec.SetField(try.FieldType, field.TypeEnum, value)
 	}
-	_node = &Try{config: tuo.config}
+	_node = &Try{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, tuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{try.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -319,6 +319,6 @@ func (tuo *TryUpdateOne) sqlSave(ctx context.Context) (_node *Try, err error) {
 		}
 		return nil, err
 	}
-	tuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

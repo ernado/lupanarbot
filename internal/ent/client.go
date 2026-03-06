@@ -272,8 +272,8 @@ func (c *TelegramChannelClient) Update() *TelegramChannelUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TelegramChannelClient) UpdateOne(tc *TelegramChannel) *TelegramChannelUpdateOne {
-	mutation := newTelegramChannelMutation(c.config, OpUpdateOne, withTelegramChannel(tc))
+func (c *TelegramChannelClient) UpdateOne(_m *TelegramChannel) *TelegramChannelUpdateOne {
+	mutation := newTelegramChannelMutation(c.config, OpUpdateOne, withTelegramChannel(_m))
 	return &TelegramChannelUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -290,8 +290,8 @@ func (c *TelegramChannelClient) Delete() *TelegramChannelDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TelegramChannelClient) DeleteOne(tc *TelegramChannel) *TelegramChannelDeleteOne {
-	return c.DeleteOneID(tc.ID)
+func (c *TelegramChannelClient) DeleteOne(_m *TelegramChannel) *TelegramChannelDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -405,8 +405,8 @@ func (c *TelegramSessionClient) Update() *TelegramSessionUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TelegramSessionClient) UpdateOne(ts *TelegramSession) *TelegramSessionUpdateOne {
-	mutation := newTelegramSessionMutation(c.config, OpUpdateOne, withTelegramSession(ts))
+func (c *TelegramSessionClient) UpdateOne(_m *TelegramSession) *TelegramSessionUpdateOne {
+	mutation := newTelegramSessionMutation(c.config, OpUpdateOne, withTelegramSession(_m))
 	return &TelegramSessionUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -423,8 +423,8 @@ func (c *TelegramSessionClient) Delete() *TelegramSessionDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TelegramSessionClient) DeleteOne(ts *TelegramSession) *TelegramSessionDeleteOne {
-	return c.DeleteOneID(ts.ID)
+func (c *TelegramSessionClient) DeleteOne(_m *TelegramSession) *TelegramSessionDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.
@@ -538,8 +538,8 @@ func (c *TryClient) Update() *TryUpdate {
 }
 
 // UpdateOne returns an update builder for the given entity.
-func (c *TryClient) UpdateOne(t *Try) *TryUpdateOne {
-	mutation := newTryMutation(c.config, OpUpdateOne, withTry(t))
+func (c *TryClient) UpdateOne(_m *Try) *TryUpdateOne {
+	mutation := newTryMutation(c.config, OpUpdateOne, withTry(_m))
 	return &TryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
 
@@ -556,8 +556,8 @@ func (c *TryClient) Delete() *TryDelete {
 }
 
 // DeleteOne returns a builder for deleting the given entity.
-func (c *TryClient) DeleteOne(t *Try) *TryDeleteOne {
-	return c.DeleteOneID(t.ID)
+func (c *TryClient) DeleteOne(_m *Try) *TryDeleteOne {
+	return c.DeleteOneID(_m.ID)
 }
 
 // DeleteOneID returns a builder for deleting the given entity by its id.

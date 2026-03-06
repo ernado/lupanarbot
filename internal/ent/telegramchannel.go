@@ -45,7 +45,7 @@ func (*TelegramChannel) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the TelegramChannel fields.
-func (tc *TelegramChannel) assignValues(columns []string, values []any) error {
+func (_m *TelegramChannel) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -56,27 +56,27 @@ func (tc *TelegramChannel) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			tc.ID = int64(value.Int64)
+			_m.ID = int64(value.Int64)
 		case telegramchannel.FieldAccessHash:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field access_hash", values[i])
 			} else if value.Valid {
-				tc.AccessHash = value.Int64
+				_m.AccessHash = value.Int64
 			}
 		case telegramchannel.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
-				tc.Title = value.String
+				_m.Title = value.String
 			}
 		case telegramchannel.FieldActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field active", values[i])
 			} else if value.Valid {
-				tc.Active = value.Bool
+				_m.Active = value.Bool
 			}
 		default:
-			tc.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -84,41 +84,41 @@ func (tc *TelegramChannel) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the TelegramChannel.
 // This includes values selected through modifiers, order, etc.
-func (tc *TelegramChannel) Value(name string) (ent.Value, error) {
-	return tc.selectValues.Get(name)
+func (_m *TelegramChannel) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this TelegramChannel.
 // Note that you need to call TelegramChannel.Unwrap() before calling this method if this TelegramChannel
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (tc *TelegramChannel) Update() *TelegramChannelUpdateOne {
-	return NewTelegramChannelClient(tc.config).UpdateOne(tc)
+func (_m *TelegramChannel) Update() *TelegramChannelUpdateOne {
+	return NewTelegramChannelClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the TelegramChannel entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (tc *TelegramChannel) Unwrap() *TelegramChannel {
-	_tx, ok := tc.config.driver.(*txDriver)
+func (_m *TelegramChannel) Unwrap() *TelegramChannel {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: TelegramChannel is not a transactional entity")
 	}
-	tc.config.driver = _tx.drv
-	return tc
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (tc *TelegramChannel) String() string {
+func (_m *TelegramChannel) String() string {
 	var builder strings.Builder
 	builder.WriteString("TelegramChannel(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", tc.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("access_hash=")
-	builder.WriteString(fmt.Sprintf("%v", tc.AccessHash))
+	builder.WriteString(fmt.Sprintf("%v", _m.AccessHash))
 	builder.WriteString(", ")
 	builder.WriteString("title=")
-	builder.WriteString(tc.Title)
+	builder.WriteString(_m.Title)
 	builder.WriteString(", ")
 	builder.WriteString("active=")
-	builder.WriteString(fmt.Sprintf("%v", tc.Active))
+	builder.WriteString(fmt.Sprintf("%v", _m.Active))
 	builder.WriteByte(')')
 	return builder.String()
 }
