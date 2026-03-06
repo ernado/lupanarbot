@@ -34,7 +34,7 @@ func Open(ctx context.Context, uri string, t *app.Telemetry) (*ent.Client, error
 		options := []otelsql.Option{
 			otelsql.WithMeterProvider(t.MeterProvider()),
 		}
-		if err := otelsql.RegisterDBStatsMetrics(db, options...); err != nil {
+		if _, err := otelsql.RegisterDBStatsMetrics(db, options...); err != nil {
 			return nil, errors.Wrap(err, "otelsql.RegisterDBStatsMetrics")
 		}
 	}
