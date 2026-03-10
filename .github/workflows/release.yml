@@ -60,14 +60,14 @@ jobs:
         run: go build -v ./cmd/bot
 
       - name: Application image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: "${{ env.IMAGE_TAG }}:${{ env.sha }}"
 
       - name: Migrate image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           file: migrate.Dockerfile
           push: true
