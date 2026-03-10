@@ -15,7 +15,7 @@ require (
 	github.com/go-faster/sdk v0.34.0
 	github.com/google/uuid v1.6.0
 	github.com/gotd/contrib v0.21.1
-	github.com/gotd/td v0.140.0
+	github.com/gotd/td v0.141.0
 	github.com/jackc/pgx/v5 v5.8.0
 	github.com/klauspost/compress v1.18.4
 	github.com/stretchr/testify v1.11.1
